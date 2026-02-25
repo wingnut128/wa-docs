@@ -8,10 +8,14 @@ This is a **documentation-only** repository — there is no application code, bu
 
 ## Structure
 
+Two top-level directories:
+- `reference-architecture/` — platform-agnostic design patterns and decisions (network docs nested under `network/`)
+- `poc/` — runnable PoC deployment validating the reference architecture
+
 Documents are numbered and build on each other. The dependency chain matters:
-- `01-trust-domain-and-attestation-policy.md` is the root — decisions here constrain everything downstream
-- `03-nested-topology-patterns.md` depends on 01 and feeds into network docs
-- `04-agent-connectivity-requirements.md` and `05-dns-resolution-strategy.md` are network-layer docs that consume upstream decisions
+- `reference-architecture/01-trust-domain-and-attestation-policy.md` is the root — decisions here constrain everything downstream
+- `reference-architecture/03-nested-topology-patterns.md` depends on 01 and feeds into network docs
+- `reference-architecture/network/` contains connectivity, DNS, and firewall docs that consume upstream decisions
 - `READING-ORDER.md` contains the full dependency map and role-based reading paths
 
 See `README.md` for the intended full document set (many are planned/stub status) and the design decisions log.

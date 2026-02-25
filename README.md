@@ -60,13 +60,13 @@ Key architectural decisions are recorded inline in the relevant documents. A sum
 
 | Decision | Where Documented |
 |---|---|
-| Single trust domain (`spiffe://yourorg.com`) for all connected infrastructure | `01-trust-domain-and-attestation-policy.md` §3.1 |
-| Nested SPIRE topology (not SPIFFE federation) for all internal segments | `03-nested-topology-patterns.md` §2.3 |
-| Collapsed SPIFFE ID path — no K8s vs VM distinction | `01-trust-domain-and-attestation-policy.md` §4.3 |
-| X.509-SVID TTL: 1 hour. JWT-SVID TTL: 5 minutes | `01-trust-domain-and-attestation-policy.md` §5.3 |
-| Downstream server nodes must run a local SPIRE agent (workload API socket model) | `03-nested-topology-patterns.md` §3.3 |
-| CockroachDB for SPIRE datastore (replaces PostgreSQL) | `02-spire-server-ha-architecture.md` |
-| Kyverno for Kubernetes admission control | `11-policy-as-code.md` |
+| Single trust domain (`spiffe://yourorg.com`) for all connected infrastructure | `reference-architecture/01-trust-domain-and-attestation-policy.md` §3.1 |
+| Nested SPIRE topology (not SPIFFE federation) for all internal segments | `reference-architecture/03-nested-topology-patterns.md` §2.3 |
+| Collapsed SPIFFE ID path — no K8s vs VM distinction | `reference-architecture/01-trust-domain-and-attestation-policy.md` §4.3 |
+| X.509-SVID TTL: 1 hour. JWT-SVID TTL: 5 minutes | `reference-architecture/01-trust-domain-and-attestation-policy.md` §5.3 |
+| Downstream server nodes must run a local SPIRE agent (workload API socket model) | `reference-architecture/03-nested-topology-patterns.md` §3.3 |
+| CockroachDB for SPIRE datastore (replaces PostgreSQL) | `reference-architecture/02-spire-server-ha-architecture.md` |
+| Kyverno for Kubernetes admission control | `reference-architecture/11-policy-as-code.md` |
 
 ---
 

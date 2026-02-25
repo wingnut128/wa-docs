@@ -9,10 +9,10 @@ This guide provides structured reading paths based on your role and goals. The d
 Start here to build the conceptual foundation before reading any design documents.
 
 1. [SPIFFE/SPIRE official concepts](https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/) — external link
-2. `01-trust-domain-and-attestation-policy.md` §1–3 — trust domains and the single trust domain decision
-3. `01-trust-domain-and-attestation-policy.md` §4 — SPIFFE ID naming and what goes in the path
-4. `01-trust-domain-and-attestation-policy.md` §5 — attestation plugins and SVID lifetimes
-5. `03-nested-topology-patterns.md` §2 — nested servers vs. SPIFFE federation (the distinction matters early)
+2. `reference-architecture/01-trust-domain-and-attestation-policy.md` §1–3 — trust domains and the single trust domain decision
+3. `reference-architecture/01-trust-domain-and-attestation-policy.md` §4 — SPIFFE ID naming and what goes in the path
+4. `reference-architecture/01-trust-domain-and-attestation-policy.md` §5 — attestation plugins and SVID lifetimes
+5. `reference-architecture/03-nested-topology-patterns.md` §2 — nested servers vs. SPIFFE federation (the distinction matters early)
 
 ---
 
@@ -21,21 +21,21 @@ Start here to build the conceptual foundation before reading any design document
 Read the design decisions and their rationale without getting into implementation detail.
 
 1. `README.md` — Design Decisions Log (the summary table)
-2. `01-trust-domain-and-attestation-policy.md` — full document
-3. `03-nested-topology-patterns.md` — §2 (nested vs. federation) and §4 (trust chain)
-4. `02-spire-server-ha-architecture.md` — HA cluster design and recovery budgets
+2. `reference-architecture/01-trust-domain-and-attestation-policy.md` — full document
+3. `reference-architecture/03-nested-topology-patterns.md` — §2 (nested vs. federation) and §4 (trust chain)
+4. `reference-architecture/02-spire-server-ha-architecture.md` — HA cluster design and recovery budgets
 
 ---
 
 ## If you are implementing — cloud infrastructure
 
-1. `01-trust-domain-and-attestation-policy.md` — full document (decisions that constrain everything else)
-2. `02-spire-server-ha-architecture.md` — upstream HA cluster
-3. `03-nested-topology-patterns.md` — full document (downstream server design)
-4. `network/04-agent-connectivity-requirements.md` — ports, protocols, per-segment matrix
-5. `network/05-dns-resolution-strategy.md` — FQDN strategy before configuring agents
-6. `network/06-firewall-rules.md` — rule templates per segment
-7. `07-spire-agent-deployment.md` — agent rollout per platform
+1. `reference-architecture/01-trust-domain-and-attestation-policy.md` — full document (decisions that constrain everything else)
+2. `reference-architecture/02-spire-server-ha-architecture.md` — upstream HA cluster
+3. `reference-architecture/03-nested-topology-patterns.md` — full document (downstream server design)
+4. `reference-architecture/network/04-agent-connectivity-requirements.md` — ports, protocols, per-segment matrix
+5. `reference-architecture/network/05-dns-resolution-strategy.md` — FQDN strategy before configuring agents
+6. `reference-architecture/network/06-firewall-rules.md` — rule templates per segment
+7. `reference-architecture/07-spire-agent-deployment.md` — agent rollout per platform
 
 ---
 
@@ -43,10 +43,10 @@ Read the design decisions and their rationale without getting into implementatio
 
 The on-premises path has additional complexity around node attestation and TPM availability.
 
-1. `01-trust-domain-and-attestation-policy.md` §5.1 — on-prem node attestation options and the TPM requirement
-2. `03-nested-topology-patterns.md` — full document, with attention to §3.2 (bootstrap credential options for on-prem)
-3. `network/04-agent-connectivity-requirements.md` §4.4 — on-prem internal connectivity
-4. `network/05-dns-resolution-strategy.md` §Phase 4 — CoreDNS on on-prem Kubernetes
+1. `reference-architecture/01-trust-domain-and-attestation-policy.md` §5.1 — on-prem node attestation options and the TPM requirement
+2. `reference-architecture/03-nested-topology-patterns.md` — full document, with attention to §3.2 (bootstrap credential options for on-prem)
+3. `reference-architecture/network/04-agent-connectivity-requirements.md` §4.4 — on-prem internal connectivity
+4. `reference-architecture/network/05-dns-resolution-strategy.md` §Phase 4 — CoreDNS on on-prem Kubernetes
 
 ---
 
@@ -54,10 +54,10 @@ The on-premises path has additional complexity around node attestation and TPM a
 
 Focus on the security model, trust chain, and failure scenarios.
 
-1. `01-trust-domain-and-attestation-policy.md` §5–6 — attestation selectors and policy enforcement
-2. `03-nested-topology-patterns.md` §3 (bootstrap security), §4 (trust chain and CA key storage), §5 (failure behavior)
-3. `09-failure-modes-and-runbooks.md` — blast radius analysis
-4. `11-policy-as-code.md` — admission control enforcement
+1. `reference-architecture/01-trust-domain-and-attestation-policy.md` §5–6 — attestation selectors and policy enforcement
+2. `reference-architecture/03-nested-topology-patterns.md` §3 (bootstrap security), §4 (trust chain and CA key storage), §5 (failure behavior)
+3. `reference-architecture/09-failure-modes-and-runbooks.md` — blast radius analysis
+4. `reference-architecture/11-policy-as-code.md` — admission control enforcement
 
 ---
 

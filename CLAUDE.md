@@ -28,11 +28,11 @@ See `README.md` for the intended full document set (many are planned/stub status
 
 ## MkDocs Site
 
-- **Live site:** https://wingnut128.github.io/wa-docs/
+- **Live site:** https://workload-identity-docs.pages.dev/
 - **Build locally:** `uv pip install --system -r requirements.txt && mkdocs build --strict`
 - **Serve locally:** `mkdocs serve` (auto-reloads on file changes)
-- **Deployment:** Automatic via GitHub Actions on push to `main` when `docs/`, `mkdocs.yml`, or `requirements.txt` change. Can also be triggered manually via `workflow_dispatch`.
-- **GitHub Pages source:** Must be set to "GitHub Actions" in Settings → Pages
+- **Deployment:** Automatic via Cloudflare Pages — builds from the `main` branch on push. No GitHub Actions workflow needed.
+- **Cloudflare Pages project:** `workload-identity-docs` (build command: `pip install -r requirements.txt && mkdocs build`, output directory: `site`)
 
 ## Document Conventions
 

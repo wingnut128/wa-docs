@@ -247,5 +247,5 @@ The following selectors should generally be avoided in registration entries beca
 - **BEA-40 / `08-observability.md`** — Attestation failure visibility depends on the selectors and policies defined here.
 - **BEA-41 / `09-failure-modes-and-runbooks.md`** — Root CA rotation for isolated segments is a critical failure mode.
 - **BEA-42 / `10-legacy-integration.md`** — JWT-SVID TTL (§5.3) applies to JWT-based legacy integrations.
-- **BEA-45 / `network/`** — Deferred isolated segment design.
-- **BEA-58 / `network/04-agent-connectivity-requirements.md`** — Phase 1 research confirmed AWS is in scope.
+- **BEA-45 / network segmentation** — Deferred isolated segment design.
+- **BEA-58 / `04-agent-connectivity-requirements.md`** — Phase 1 research confirmed AWS is in scope.

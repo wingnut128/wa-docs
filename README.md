@@ -22,7 +22,7 @@ SPIFFE/SPIRE replaces these mechanisms with **platform-based workload attestatio
 ```
 reference-architecture/
 ├── 01-trust-domain-and-attestation-policy.md   # Trust domain, SPIFFE ID naming, attestation selectors, SVID TTLs
-├── 02-spire-server-ha-architecture.md          # Upstream HA cluster design, CockroachDB datastore, CA rotation
+├── 02-spire-server-ha-architecture.md          # Upstream HA cluster design, PostgreSQL datastore, CA rotation
 ├── 03-nested-topology-patterns.md              # Nested vs. federation, downstream server bootstrap, trust chain
 ├── network/
 │   ├── 04-agent-connectivity-requirements.md   # Ports, protocols, per-segment connectivity matrix
@@ -66,7 +66,7 @@ Key architectural decisions are recorded inline in the relevant documents. A sum
 | Collapsed SPIFFE ID path — no K8s vs VM distinction | `reference-architecture/01-trust-domain-and-attestation-policy.md` §4.3 |
 | X.509-SVID TTL: 1 hour. JWT-SVID TTL: 5 minutes | `reference-architecture/01-trust-domain-and-attestation-policy.md` §5.3 |
 | Downstream server nodes must run a local SPIRE agent (workload API socket model) | `reference-architecture/03-nested-topology-patterns.md` §3.3 |
-| CockroachDB for SPIRE datastore (replaces PostgreSQL) | `reference-architecture/02-spire-server-ha-architecture.md` |
+| PostgreSQL for SPIRE datastore (Patroni on-prem, managed services in cloud) | `reference-architecture/02-spire-server-ha-architecture.md` |
 | Kyverno for Kubernetes admission control | `reference-architecture/11-policy-as-code.md` |
 | Bowtie/WireGuard as authenticated network transport layer | `reference-architecture/network/12-network-overlay-architecture.md` |
 | Three-layer policy model: Kyverno (K8s), Bowtie (network), OPA (governance) | `reference-architecture/network/12-network-overlay-architecture.md` §6 |

@@ -13,6 +13,9 @@ Desktop.ini
 .settings/
 .classpath
 
+# SSH/security directories
+.ssh/
+
 # Credentials and secrets
 .env
 .env.*
@@ -34,4 +37,5 @@ kubeconfig.*
 # Terraform / IaC state (if PoC artifacts land here)
 *.tfstate
 *.tfstate.backup
+*.tfvars
 .terraform/

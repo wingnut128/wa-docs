@@ -46,12 +46,28 @@ See `README.md` for the intended full document set (many are planned/stub status
 Every document follows this header pattern:
 ```
 # Title
-**Subtitle or technology context**
+
+**Subtitle — technology or design context**
+
 BEA-XX | Workload Identity | Date
-**Status:** Complete/In Progress/Planned/Stub | **Priority:** High/Medium/Low
+
+**Status:** {emoji} Status | **Priority:** High/Medium/Low
+
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Depends on:** BEA-XX (Name), BEA-YY (Name)
+**Feeds into:** BEA-ZZ (Name)
+
 ---
 ```
+
+Status emojis: ✅ Complete, 🔄 In Progress, 📋 Planned, 🚧 Stub
+
+Rules:
+- Dependency lines are omitted if a document has no dependencies (root documents)
+- Only include the dependency types that apply (Depends on, Feeds into, Blocks, Parent)
+- Date field: actual date for complete/in-progress docs, `TBD` for planned/stub
+- PoC documents use "PoC Deployment" instead of "Workload Identity" and omit the scope line
 
 ## Writing Guidelines
 

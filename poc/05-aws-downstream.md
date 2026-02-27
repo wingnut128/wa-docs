@@ -1,5 +1,9 @@
 # AWS Downstream
 
-**Status:** Planned
+**AWS Downstream SPIRE Server and Workload Infrastructure**
 
-AWS downstream SPIRE server + workload infrastructure.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

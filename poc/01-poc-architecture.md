@@ -1,5 +1,9 @@
 # PoC Architecture
 
-**Status:** Planned
+**Scope, Constraints, and Reference Architecture Divergence**
 
-Scope, constraints, where PoC diverges from reference architecture.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

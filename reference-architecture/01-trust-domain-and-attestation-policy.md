@@ -1,8 +1,12 @@
 # Trust Domain & Attestation Policy Framework
 
-**SPIFFE/SPIRE Implementation Design — BEA-44**
+**SPIFFE/SPIRE Trust Domain and Attestation Design**
 
-**Status:** Complete | **Priority:** High | **Scope:** Connected infrastructure only. Air-gapped/isolated segments: see BEA-45.
+BEA-44 | Workload Identity | TBD
+
+**Status:** ✅ Complete | **Priority:** High
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
 
 ---
 

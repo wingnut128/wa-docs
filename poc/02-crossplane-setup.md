@@ -1,5 +1,9 @@
 # Crossplane Setup
 
-**Status:** Planned
+**Provider Configuration and Base Compositions (GCP + AWS)**
 
-Provider config, base compositions (GCP + AWS).
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

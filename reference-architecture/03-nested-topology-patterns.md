@@ -1,8 +1,16 @@
 # Nested SPIRE Topology Patterns
 
-**SPIFFE/SPIRE Implementation Design — BEA-59 / Phase 1**
+**SPIFFE/SPIRE Nested Server Design — Phase 1**
 
-**Status:** 🔄 In Review (Phase 1 complete) | **Parent:** BEA-45 | **Depends on:** BEA-44, BEA-38 | **Feeds into:** BEA-58 (DMZ gap), BEA-61 (Trust Bundle Distribution), BEA-64 (Firewall Rules)
+BEA-59 | Workload Identity | TBD
+
+**Status:** 🔄 In Review (Phase 1 complete) | **Priority:** High
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Parent:** BEA-45
+**Depends on:** BEA-44, BEA-38
+**Feeds into:** BEA-58 (DMZ gap), BEA-61 (Trust Bundle Distribution), BEA-64 (Firewall Rules)
 
 ---
 

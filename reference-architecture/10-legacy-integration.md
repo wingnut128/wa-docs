@@ -1,5 +1,11 @@
 # Legacy Integration
 
-**Status:** Planned
+**Integration Patterns for Non-SVID-Native Services**
 
-Integration patterns for non-SVID-native services.
+BEA-42 | Workload Identity | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+---

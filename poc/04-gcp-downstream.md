@@ -1,5 +1,9 @@
 # GCP Downstream
 
-**Status:** Planned
+**GCP Downstream SPIRE Server and Workload Infrastructure**
 
-GCP downstream SPIRE server + workload infrastructure.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

@@ -1,5 +1,9 @@
 # Temporal Orchestration
 
-**Status:** Planned
+**Workflow Design, Spin-Up/Tear-Down, and Failure Handling**
 
-Workflow design, spin-up/tear-down, failure handling.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

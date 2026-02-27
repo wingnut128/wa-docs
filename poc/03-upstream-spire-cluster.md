@@ -1,5 +1,9 @@
 # Upstream SPIRE Cluster
 
-**Status:** Planned
+**Upstream HA SPIRE Provisioning**
 
-Upstream HA SPIRE provisioning.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

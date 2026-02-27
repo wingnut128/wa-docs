@@ -85,7 +85,7 @@ Documents are marked with their current status:
 | Document | Status |
 |---|---|
 | 01 — Trust Domain & Attestation Policy | ✅ Complete |
-| 02 — SPIRE Server HA Architecture | 🚧 Stub |
+| 02 — SPIRE Server HA Architecture | ✅ Complete |
 | 03 — Nested Topology Patterns (Phase 1) | ✅ Complete |
 | 04 — Agent Connectivity Requirements (Phase 1) | 🔄 In Progress |
 | 05 — DNS Resolution Strategy | 🔄 In Progress |

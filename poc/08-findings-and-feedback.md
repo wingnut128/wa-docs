@@ -1,5 +1,9 @@
 # Findings and Feedback
 
-**Status:** Planned
+**PoC Findings and Reference Architecture Updates**
 
-PoC findings, reference architecture updates.
+BEA-TBD | PoC Deployment | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+---

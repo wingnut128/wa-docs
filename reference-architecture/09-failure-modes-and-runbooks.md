@@ -1,5 +1,11 @@
 # Failure Modes & SRE Runbooks
 
-**Status:** Planned
+**Failure Scenarios, SRE Runbooks, and Recovery Procedures**
 
-Failure scenarios, SRE runbooks, recovery procedures.
+BEA-TBD | Workload Identity | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+---

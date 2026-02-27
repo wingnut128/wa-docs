@@ -1,8 +1,15 @@
 # SPIRE Agent Connectivity Requirements Across Segments
 
-**SPIFFE/SPIRE Implementation Design — BEA-58 / Phase 1**
+**SPIRE Agent Network Connectivity — Phase 1**
 
-**Status:** 🔄 In Progress (Phase 1 complete) | **Parent:** BEA-45 | **Feeds into:** BEA-64 (Firewall Rules), BEA-65 (DNS)
+BEA-58 | Workload Identity | TBD
+
+**Status:** 🔄 In Progress (Phase 1 complete) | **Priority:** High
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Parent:** BEA-45
+**Feeds into:** BEA-64 (Firewall Rules), BEA-65 (DNS)
 
 ---
 

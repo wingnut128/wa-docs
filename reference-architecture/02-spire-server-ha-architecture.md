@@ -1,8 +1,14 @@
 # SPIRE Server HA Deployment Architecture
 
-**SPIFFE/SPIRE Implementation Design — BEA-38**
+**SPIFFE/SPIRE High-Availability Server Design**
 
-**Status:** ✅ Complete | **Priority:** High | **Depends on:** BEA-44 (Attestation Policy), BEA-42 (Legacy Integration)
+BEA-38 | Workload Identity | TBD
+
+**Status:** ✅ Complete | **Priority:** High
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Depends on:** BEA-44 (Attestation Policy), BEA-42 (Legacy Integration)
 
 ---
 

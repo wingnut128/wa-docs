@@ -1,8 +1,15 @@
 # DNS Resolution Strategy for SPIRE Server Endpoints
 
-**SPIFFE/SPIRE Implementation Design — BEA-65**
+**DNS Strategy for SPIRE Server Endpoints**
 
-**Status:** 🔄 In Progress | **Parent:** BEA-45 | **Blocks:** BEA-58 (connectivity matrix update), BEA-64 (firewall rules)
+BEA-65 | Workload Identity | TBD
+
+**Status:** 🔄 In Progress | **Priority:** High
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Parent:** BEA-45
+**Blocks:** BEA-58 (connectivity matrix update), BEA-64 (firewall rules)
 
 ---
 

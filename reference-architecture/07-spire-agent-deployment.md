@@ -1,5 +1,13 @@
 # SPIRE Agent Deployment
 
-**Status:** Planned
+**Agent Deployment, Lifecycle, and Node Attestation**
 
-Agent deployment, lifecycle, node attestation per platform.
+BEA-TBD | Workload Identity | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Depends on:** BEA-44 (Attestation Policy)
+
+---

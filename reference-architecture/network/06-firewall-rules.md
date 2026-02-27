@@ -1,5 +1,13 @@
 # Firewall Rules
 
-**Status:** Planned (pending BEA-58/65)
+**Firewall Rule Templates Per Segment**
 
-Firewall rule templates per segment.
+BEA-64 | Workload Identity | TBD
+
+**Status:** 📋 Planned | **Priority:** Medium
+
+**Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
+
+**Depends on:** BEA-58 (Connectivity), BEA-65 (DNS)
+
+---

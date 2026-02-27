@@ -4,7 +4,7 @@
 
 BEA-79 | Workload Identity | February 27, 2026
 
-**Status:** In Progress | **Priority:** High
+**Status:** 🔄 In Progress | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments deferred to BEA-45.
 

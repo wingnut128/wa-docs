@@ -1,5 +1,7 @@
 # Proof of Concept
 
-**Status:** Planned
+**PoC Overview and Objectives**
 
-PoC overview and objectives.
+**Status:** 📋 Planned
+
+---

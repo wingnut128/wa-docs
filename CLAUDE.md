@@ -28,10 +28,9 @@ See `README.md` for the intended full document set (many are planned/stub status
 
 ## MkDocs Site
 
-- **Live site:** https://workload-attestation.netlify.app/
+- **Live site:** https://wingnut128.github.io/wa-docs/ (deployment currently disabled)
 - **Build locally:** `uv pip install --system -r requirements.txt && mkdocs build --strict`
 - **Serve locally:** `mkdocs serve` (auto-reloads on file changes)
-- **Deployment:** Automatic via Netlify — builds from the `main` branch on push. Config in `netlify.toml`.
 
 ## Document Conventions
 

@@ -11,7 +11,7 @@ The repository has two parallel tracks:
 
 ## Documentation Site
 
-**Read the rendered documentation at [workload-identity-docs.pages.dev](https://workload-identity-docs.pages.dev/)** — includes sidebar navigation, search, and Mermaid dependency diagrams.
+**Read the rendered documentation at [workload-attestation.netlify.app](https://workload-attestation.netlify.app/)** — includes sidebar navigation, search, and Mermaid dependency diagrams.
 
 ---
 

@@ -172,7 +172,7 @@ Air-gapped and isolated segments are out of scope. Those environments have indep
 
 | Document | Relationship |
 |---|---|
-| BEA-45 / `network/` | Parent: overall network segmentation strategy |
+| BEA-45 / network segmentation | Parent: overall network segmentation strategy |
 | `04-agent-connectivity-requirements.md` | Agent connectivity requirements; DNS outputs feed back into the connectivity matrix |
 | `02-spire-server-ha-architecture.md` | SPIRE HA architecture; Patroni topology determines the failover DNS requirements in Phase 3 |
 | `03-nested-topology-patterns.md` | Nested topology design determines which server FQDNs agents need to resolve per segment |

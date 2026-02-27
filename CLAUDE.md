@@ -8,20 +8,31 @@ This is a **documentation-only** repository — there is no application code, bu
 
 ## Structure
 
-Two top-level directories:
-- `reference-architecture/` — platform-agnostic design patterns and decisions (network docs nested under `network/`)
-- `poc/` — runnable PoC deployment validating the reference architecture
+All documentation lives under `docs/` and is served by MkDocs Material:
+- `docs/reference-architecture/` — platform-agnostic design patterns and decisions (flat directory, no subdirectories)
+- `docs/poc/` — runnable PoC deployment validating the reference architecture
+- `docs/index.md` — site home page
+- `docs/reading-order.md` — reading paths and dependency map
+- `mkdocs.yml` — MkDocs Material configuration and nav tree
 
-Documents use a **global numbering scheme** (01–12) across both `reference-architecture/` and `reference-architecture/network/`. Numbers are not strictly sequential within directories — the reading order and dependency chain in `READING-ORDER.md` define the actual sequence.
+Documents use a **global numbering scheme** (01–12) across `docs/reference-architecture/`. Numbers are not strictly sequential — the reading order and dependency chain in `docs/reading-order.md` define the actual sequence.
 
 The dependency chain matters:
 - `01-trust-domain-and-attestation-policy.md` is the root — decisions here constrain everything downstream
 - `03-nested-topology-patterns.md` depends on 01 and feeds into network docs
-- `network/04-agent-connectivity-requirements.md` → `network/12-network-overlay-architecture.md` → `network/06-firewall-rules.md` is the network dependency chain
-- `network/12-network-overlay-architecture.md` also feeds into `11-policy-as-code.md` (three-layer policy model)
-- `READING-ORDER.md` contains the full dependency map and role-based reading paths
+- `04-agent-connectivity-requirements.md` → `12-network-overlay-architecture.md` → `06-firewall-rules.md` is the network dependency chain
+- `12-network-overlay-architecture.md` also feeds into `11-policy-as-code.md` (three-layer policy model)
+- `docs/reading-order.md` contains the full dependency map and role-based reading paths
 
 See `README.md` for the intended full document set (many are planned/stub status) and the design decisions log.
+
+## MkDocs Site
+
+- **Live site:** https://wingnut128.github.io/wa-docs/
+- **Build locally:** `uv pip install --system -r requirements.txt && mkdocs build --strict`
+- **Serve locally:** `mkdocs serve` (auto-reloads on file changes)
+- **Deployment:** Automatic via GitHub Actions on push to `main` when `docs/`, `mkdocs.yml`, or `requirements.txt` change. Can also be triggered manually via `workflow_dispatch`.
+- **GitHub Pages source:** Must be set to "GitHub Actions" in Settings → Pages
 
 ## Document Conventions
 
@@ -76,7 +87,7 @@ When editing or adding content to these documents:
 - Preserve the status/metadata header format at the top of each document
 - Keep scope boundaries explicit — do not mix connected and air-gapped concerns
 - Record design decisions with rationale inline rather than as standalone entries
-- When adding a new document: assign the next available global number, place in the correct directory (`network/` for networking topics, top-level for everything else), and update all three: `README.md` (structure tree, decisions log, status table), `READING-ORDER.md` (dependency map and relevant reading paths)
+- When adding a new document: assign the next available global number, place in `docs/reference-architecture/`, and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `mkdocs.yml` (nav tree)
 
 ## Git Workflow
 

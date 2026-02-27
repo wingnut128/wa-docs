@@ -129,7 +129,7 @@ Cloud downstreams use managed database services deliberately: managed PostgreSQL
 
 Cloud downstreams deploy SPIRE server instances across availability zones within a single region. Multi-region deployment within a cloud provider is not required at this stage — if a region-level cloud outage occurs, workloads in that region are down regardless of SPIRE availability. Multi-region cloud deployment is a future consideration if workloads span regions.
 
-> **AWS note:** The `aws_iid` node attestation plugin requires IMDSv2 (`HttpTokens=required`) on all EC2 instances and EKS node groups. AWS downstream servers connect to the on-premises upstream via Direct Connect (preferred) or Site-to-Site VPN. See `network/04-agent-connectivity-requirements.md` §4.2 for detailed connectivity requirements. IMDSv2 enforcement must be validated before agents attest — an EC2 instance with `HttpTokens=optional` may attest inconsistently. Enforcement mechanism required: options include an AWS SCP blocking launch of instances with IMDSv2 optional, an AWS Config rule flagging non-compliant instances, or an IaC module default. The chosen mechanism must be confirmed with the platform team before the AWS downstream goes into production.
+> **AWS note:** The `aws_iid` node attestation plugin requires IMDSv2 (`HttpTokens=required`) on all EC2 instances and EKS node groups. AWS downstream servers connect to the on-premises upstream via Direct Connect (preferred) or Site-to-Site VPN. See `04-agent-connectivity-requirements.md` §4.2 for detailed connectivity requirements. IMDSv2 enforcement must be validated before agents attest — an EC2 instance with `HttpTokens=optional` may attest inconsistently. Enforcement mechanism required: options include an AWS SCP blocking launch of instances with IMDSv2 optional, an AWS Config rule flagging non-compliant instances, or an IaC module default. The chosen mechanism must be confirmed with the platform team before the AWS downstream goes into production.
 
 ### 5.2 On-Premises Downstream
 
@@ -237,5 +237,5 @@ BEA-45 (network segmentation and isolated environment strategy) may drive federa
 - `07-spire-agent-deployment.md` — Agent deployment depends on SPIRE server endpoints and load balancer addresses defined here
 - `08-observability.md` — Monitoring must cover all components: upstream/downstream SPIRE servers, PostgreSQL replication lag, Patroni state, HSM health, cross-connect status
 - `09-failure-modes-and-runbooks.md` — Failure scenarios in §8 require detailed runbooks
-- `network/04-agent-connectivity-requirements.md` — AWS Direct Connect/VPN connectivity requirements for AWS downstream agents
-- `network/05-dns-resolution-strategy.md` — Patroni failover DNS continuity (Phase 3 of BEA-65) depends on the Patroni topology defined here
+- `04-agent-connectivity-requirements.md` — AWS Direct Connect/VPN connectivity requirements for AWS downstream agents
+- `05-dns-resolution-strategy.md` — Patroni failover DNS continuity (Phase 3 of BEA-65) depends on the Patroni topology defined here

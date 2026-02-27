@@ -217,5 +217,5 @@ The autonomous operation window — the period during which workloads continue t
 
 - `01-trust-domain-and-attestation-policy.md` — Trust domain model and SPIFFE ID naming constrains registration entry design (Phase 4)
 - `02-spire-server-ha-architecture.md` — Upstream HA cluster design; intermediate CA TTLs feed back into CA rotation design
-- `network/04-agent-connectivity-requirements.md` — DMZ connectivity decision (Option A) is blocked on Phase 2 DMZ topology output from this document
-- `network/06-firewall-rules.md` — Firewall rules for downstream-to-upstream server traffic depend on Phase 2 placement decisions
+- `04-agent-connectivity-requirements.md` — DMZ connectivity decision (Option A) is blocked on Phase 2 DMZ topology output from this document
+- `06-firewall-rules.md` — Firewall rules for downstream-to-upstream server traffic depend on Phase 2 placement decisions

@@ -9,6 +9,12 @@ The repository has two parallel tracks:
 
 ---
 
+## Documentation Site
+
+**Read the rendered documentation at [wingnut128.github.io/wa-docs](https://wingnut128.github.io/wa-docs/)** — includes sidebar navigation, search, and Mermaid dependency diagrams.
+
+---
+
 ## What Problem Does This Solve?
 
 Traditional service authentication relies on long-lived secrets: Kerberos keytabs, API keys, static TLS certificates, and service account tokens. These credentials are difficult to rotate, hard to scope, and routinely outlive their intended purpose.
@@ -20,38 +26,33 @@ SPIFFE/SPIRE replaces these mechanisms with **platform-based workload attestatio
 ## Repository Structure
 
 ```
-reference-architecture/
-├── 01-trust-domain-and-attestation-policy.md   # Trust domain, SPIFFE ID naming, attestation selectors, SVID TTLs
-├── 02-spire-server-ha-architecture.md          # Upstream HA cluster design, PostgreSQL datastore, CA rotation
-├── 03-nested-topology-patterns.md              # Nested vs. federation, downstream server bootstrap, trust chain
-├── network/
-│   ├── 04-agent-connectivity-requirements.md   # Ports, protocols, per-segment connectivity matrix
-│   ├── 05-dns-resolution-strategy.md           # FQDN strategy, split-horizon, Patroni failover DNS
-│   ├── 06-firewall-rules.md                    # Firewall rule templates per segment (pending BEA-58/65)
-│   └── 12-network-overlay-architecture.md      # Bowtie/WireGuard overlay, resolves DMZ and cross-CSP blockers
-├── 07-spire-agent-deployment.md                # Agent deployment, lifecycle, node attestation per platform
-├── 08-observability.md                         # Metrics, alerting, attestation failure visibility
-├── 09-failure-modes-and-runbooks.md            # Failure scenarios, SRE runbooks, recovery procedures
-├── 10-legacy-integration.md                    # Integration patterns for non-SVID-native services
-└── 11-policy-as-code.md                        # Kyverno/OPA, admission control, enforcement strategy
-
-poc/
-├── README.md                                   # PoC overview and objectives
-├── 01-poc-architecture.md                      # Scope, constraints, where PoC diverges from reference
-├── 02-crossplane-setup.md                      # Provider config, base compositions (GCP + AWS)
-├── 03-upstream-spire-cluster.md                # Upstream HA SPIRE provisioning
-├── 04-gcp-downstream.md                        # GCP downstream SPIRE server + workload infrastructure
-├── 05-aws-downstream.md                        # AWS downstream SPIRE server + workload infrastructure
-├── 06-temporal-orchestration.md                # Workflow design, spin-up/tear-down, failure handling
-├── 07-failure-scenario-testing.md              # Test plan and results
-└── 08-findings-and-feedback.md                 # PoC findings, reference architecture updates
+docs/
+├── index.md                                        # Site home page
+├── reading-order.md                                # Reading paths and dependency map
+├── reference-architecture/
+│   ├── 01-trust-domain-and-attestation-policy.md   # Trust domain, SPIFFE ID naming, attestation selectors, SVID TTLs
+│   ├── 02-spire-server-ha-architecture.md          # Upstream HA cluster design, PostgreSQL datastore, CA rotation
+│   ├── 03-nested-topology-patterns.md              # Nested vs. federation, downstream server bootstrap, trust chain
+│   ├── 04-agent-connectivity-requirements.md       # Ports, protocols, per-segment connectivity matrix
+│   ├── 05-dns-resolution-strategy.md               # FQDN strategy, split-horizon, Patroni failover DNS
+│   ├── 06-firewall-rules.md                        # Firewall rule templates per segment
+│   ├── 07-spire-agent-deployment.md                # Agent deployment, lifecycle, node attestation per platform
+│   ├── 08-observability.md                         # Metrics, alerting, attestation failure visibility
+│   ├── 09-failure-modes-and-runbooks.md            # Failure scenarios, SRE runbooks, recovery procedures
+│   ├── 10-legacy-integration.md                    # Integration patterns for non-SVID-native services
+│   ├── 11-policy-as-code.md                        # Kyverno/OPA, admission control, enforcement strategy
+│   └── 12-network-overlay-architecture.md          # Bowtie/WireGuard overlay, resolves DMZ and cross-CSP blockers
+└── poc/
+    ├── index.md                                    # PoC overview and objectives
+    ├── 01-poc-architecture.md                      # Scope, constraints, where PoC diverges from reference
+    ├── 02-crossplane-setup.md                      # Provider config, base compositions (GCP + AWS)
+    ├── 03-upstream-spire-cluster.md                # Upstream HA SPIRE provisioning
+    ├── 04-gcp-downstream.md                        # GCP downstream SPIRE server + workload infrastructure
+    ├── 05-aws-downstream.md                        # AWS downstream SPIRE server + workload infrastructure
+    ├── 06-temporal-orchestration.md                 # Workflow design, spin-up/tear-down, failure handling
+    ├── 07-failure-scenario-testing.md              # Test plan and results
+    └── 08-findings-and-feedback.md                 # PoC findings, reference architecture updates
 ```
-
----
-
-## Reading Order
-
-See [READING-ORDER.md](./READING-ORDER.md) for a guided path through the documents based on your role and starting point.
 
 ---
 
@@ -61,15 +62,15 @@ Key architectural decisions are recorded inline in the relevant documents. A sum
 
 | Decision | Where Documented |
 |---|---|
-| Single trust domain (`spiffe://yourorg.com`) for all connected infrastructure | `reference-architecture/01-trust-domain-and-attestation-policy.md` §3.1 |
-| Nested SPIRE topology (not SPIFFE federation) for all internal segments | `reference-architecture/03-nested-topology-patterns.md` §2.3 |
-| Collapsed SPIFFE ID path — no K8s vs VM distinction | `reference-architecture/01-trust-domain-and-attestation-policy.md` §4.3 |
-| X.509-SVID TTL: 1 hour. JWT-SVID TTL: 5 minutes | `reference-architecture/01-trust-domain-and-attestation-policy.md` §5.3 |
-| Downstream server nodes must run a local SPIRE agent (workload API socket model) | `reference-architecture/03-nested-topology-patterns.md` §3.3 |
-| PostgreSQL for SPIRE datastore (Patroni on-prem, managed services in cloud) | `reference-architecture/02-spire-server-ha-architecture.md` |
-| Kyverno for Kubernetes admission control | `reference-architecture/11-policy-as-code.md` |
-| Bowtie/WireGuard as authenticated network transport layer | `reference-architecture/network/12-network-overlay-architecture.md` |
-| Three-layer policy model: Kyverno (K8s), Bowtie (network), OPA (governance) | `reference-architecture/network/12-network-overlay-architecture.md` §6 |
+| Single trust domain (`spiffe://yourorg.com`) for all connected infrastructure | [`01-trust-domain-and-attestation-policy.md`](docs/reference-architecture/01-trust-domain-and-attestation-policy.md) §3.1 |
+| Nested SPIRE topology (not SPIFFE federation) for all internal segments | [`03-nested-topology-patterns.md`](docs/reference-architecture/03-nested-topology-patterns.md) §2.3 |
+| Collapsed SPIFFE ID path — no K8s vs VM distinction | [`01-trust-domain-and-attestation-policy.md`](docs/reference-architecture/01-trust-domain-and-attestation-policy.md) §4.3 |
+| X.509-SVID TTL: 1 hour. JWT-SVID TTL: 5 minutes | [`01-trust-domain-and-attestation-policy.md`](docs/reference-architecture/01-trust-domain-and-attestation-policy.md) §5.3 |
+| Downstream server nodes must run a local SPIRE agent (workload API socket model) | [`03-nested-topology-patterns.md`](docs/reference-architecture/03-nested-topology-patterns.md) §3.3 |
+| PostgreSQL for SPIRE datastore (Patroni on-prem, managed services in cloud) | [`02-spire-server-ha-architecture.md`](docs/reference-architecture/02-spire-server-ha-architecture.md) |
+| Kyverno for Kubernetes admission control | [`11-policy-as-code.md`](docs/reference-architecture/11-policy-as-code.md) |
+| Bowtie/WireGuard as authenticated network transport layer | [`12-network-overlay-architecture.md`](docs/reference-architecture/12-network-overlay-architecture.md) |
+| Three-layer policy model: Kyverno (K8s), Bowtie (network), OPA (governance) | [`12-network-overlay-architecture.md`](docs/reference-architecture/12-network-overlay-architecture.md) §6 |
 
 ---
 

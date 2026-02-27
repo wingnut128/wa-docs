@@ -27,7 +27,8 @@ reference-architecture/
 ├── network/
 │   ├── 04-agent-connectivity-requirements.md   # Ports, protocols, per-segment connectivity matrix
 │   ├── 05-dns-resolution-strategy.md           # FQDN strategy, split-horizon, Patroni failover DNS
-│   └── 06-firewall-rules.md                    # Firewall rule templates per segment (pending BEA-58/65)
+│   ├── 06-firewall-rules.md                    # Firewall rule templates per segment (pending BEA-58/65)
+│   └── 12-network-overlay-architecture.md      # Bowtie/WireGuard overlay, resolves DMZ and cross-CSP blockers
 ├── 07-spire-agent-deployment.md                # Agent deployment, lifecycle, node attestation per platform
 ├── 08-observability.md                         # Metrics, alerting, attestation failure visibility
 ├── 09-failure-modes-and-runbooks.md            # Failure scenarios, SRE runbooks, recovery procedures
@@ -67,6 +68,8 @@ Key architectural decisions are recorded inline in the relevant documents. A sum
 | Downstream server nodes must run a local SPIRE agent (workload API socket model) | `reference-architecture/03-nested-topology-patterns.md` §3.3 |
 | CockroachDB for SPIRE datastore (replaces PostgreSQL) | `reference-architecture/02-spire-server-ha-architecture.md` |
 | Kyverno for Kubernetes admission control | `reference-architecture/11-policy-as-code.md` |
+| Bowtie/WireGuard as authenticated network transport layer | `reference-architecture/network/12-network-overlay-architecture.md` |
+| Three-layer policy model: Kyverno (K8s), Bowtie (network), OPA (governance) | `reference-architecture/network/12-network-overlay-architecture.md` §6 |
 
 ---
 
@@ -92,6 +95,7 @@ Documents are marked with their current status:
 | 09 — Failure Modes & SRE Runbooks | 📋 Planned |
 | 10 — Legacy Integration | 📋 Planned |
 | 11 — Policy as Code | 📋 Planned |
+| 12 — Network Overlay Architecture | 🔄 In Progress |
 
 ---
 

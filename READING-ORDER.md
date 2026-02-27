@@ -33,9 +33,10 @@ Read the design decisions and their rationale without getting into implementatio
 2. `reference-architecture/02-spire-server-ha-architecture.md` — upstream HA cluster
 3. `reference-architecture/03-nested-topology-patterns.md` — full document (downstream server design)
 4. `reference-architecture/network/04-agent-connectivity-requirements.md` — ports, protocols, per-segment matrix
-5. `reference-architecture/network/05-dns-resolution-strategy.md` — FQDN strategy before configuring agents
-6. `reference-architecture/network/06-firewall-rules.md` — rule templates per segment
-7. `reference-architecture/07-spire-agent-deployment.md` — agent rollout per platform
+5. `reference-architecture/network/12-network-overlay-architecture.md` — Bowtie/WireGuard overlay resolves DMZ and cross-CSP connectivity
+6. `reference-architecture/network/05-dns-resolution-strategy.md` — FQDN strategy before configuring agents
+7. `reference-architecture/network/06-firewall-rules.md` — rule templates per segment (underlay simplified by overlay)
+8. `reference-architecture/07-spire-agent-deployment.md` — agent rollout per platform
 
 ---
 
@@ -56,8 +57,9 @@ Focus on the security model, trust chain, and failure scenarios.
 
 1. `reference-architecture/01-trust-domain-and-attestation-policy.md` §5–6 — attestation selectors and policy enforcement
 2. `reference-architecture/03-nested-topology-patterns.md` §3 (bootstrap security), §4 (trust chain and CA key storage), §5 (failure behavior)
-3. `reference-architecture/09-failure-modes-and-runbooks.md` — blast radius analysis
-4. `reference-architecture/11-policy-as-code.md` — admission control enforcement
+3. `reference-architecture/network/12-network-overlay-architecture.md` §3 (Bowtie/SPIRE dual identity model), §6 (three-layer policy architecture)
+4. `reference-architecture/09-failure-modes-and-runbooks.md` — blast radius analysis
+5. `reference-architecture/11-policy-as-code.md` — admission control enforcement
 
 ---
 
@@ -77,8 +79,10 @@ Focus on the security model, trust chain, and failure scenarios.
     ├── 02-spire-server-ha-architecture (HA recovery budgets derived from SVID TTLs in §5.3)
     ├── 03-nested-topology-patterns (trust domain model constrains downstream design)
     │   ├── network/04-agent-connectivity (DMZ topology from Phase 2 closes connectivity gap)
+    │   │   └── network/12-network-overlay-architecture (resolves DMZ + cross-CSP blockers from 04)
+    │   │       ├── network/06-firewall-rules (underlay simplifies to WireGuard UDP)
+    │   │       └── 11-policy-as-code (three-layer policy model: Kyverno + Bowtie + OPA)
     │   └── 10-legacy-integration (JWT-SVID TTL from §5.3 applies to legacy integrations)
     └── network/04-agent-connectivity
-            ├── network/05-dns-resolution (DNS feeds back into connectivity matrix)
-            └── network/06-firewall-rules (consumes connectivity matrix + DNS outputs)
+            └── network/05-dns-resolution (DNS feeds back into connectivity matrix)
 ```

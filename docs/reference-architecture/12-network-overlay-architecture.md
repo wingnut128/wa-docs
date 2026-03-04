@@ -152,7 +152,45 @@ The policy-as-code tooling question is resolved at a high level by this architec
 
 ---
 
-## 8. Decision Record
+## 8. Bowtie Controller Deployment Topology
+
+### 8.1 Controller Placement
+
+Bowtie controllers manage WireGuard peer keys, enforce flow intent policies, and distribute policy updates to agents. Controller placement must ensure that every segment can reach a controller for peer management and policy sync.
+
+| Location | Controller Instances | Serves | HA Model |
+|---|---|---|---|
+| On-premises DC1 | 2 (active-active) | On-prem nodes, DMZ nodes, upstream SPIRE servers | DC2 failover via cross-connect |
+| On-premises DC2 | 1 (active) | Failover for on-prem; serves DC2-local nodes | Survives DC1 failure |
+| GCP | 1–2 | GCP nodes (both prod and staging) | Cloud-native HA (multi-zone) |
+| Azure | 1–2 | Azure nodes (both prod and staging) | Cloud-native HA (multi-zone) |
+| AWS | 1–2 | AWS nodes (both prod and staging) | Cloud-native HA (multi-zone) |
+
+### 8.2 Controller HA Properties
+
+- **Existing tunnels persist** during controller outage — WireGuard peers maintain their connections. This means a brief controller outage does not impact running SPIRE operations.
+- **New peer enrollment blocked** during controller outage — new nodes cannot join the overlay until the controller recovers. This affects node provisioning but not existing workloads.
+- **Policy updates pause** during controller outage — existing policies remain enforced by agents. New policy changes do not propagate until the controller is back.
+
+### 8.3 Controller-to-Controller Communication
+
+Controllers in different locations must synchronize peer state and policy. The inter-controller communication runs over the same WireGuard overlay, creating a bootstrapping requirement: at least two controllers (in the on-prem DCs) must be provisioned manually with pre-shared WireGuard keys before the overlay is operational.
+
+### 8.4 Temporal Workflow Integration
+
+The Bowtie controller provisioning is a precondition for all node provisioning. In the Temporal orchestration workflow (PoC track), the sequence is:
+
+1. Provision infrastructure (VM, K8s node)
+2. Install Bowtie agent → enroll with controller → establish WireGuard tunnel
+3. Health check: confirm overlay connectivity
+4. Install SPIRE agent → connect to SPIRE server over overlay → node attestation
+5. Deploy workloads
+
+Step 3 is a gate — if the Bowtie tunnel is not established, the SPIRE agent cannot start.
+
+---
+
+## 9. Decision Record
 
 > **DECISION: ADOPT**
 >
@@ -160,7 +198,7 @@ The policy-as-code tooling question is resolved at a high level by this architec
 >
 > **Rationale:** Resolves two blocking architectural decisions (DMZ connectivity, cross-CSP SNAT) that have stalled Agent Connectivity Phase 2. Provides authenticated encrypted transport without requiring changes to SPIRE configuration. Aligns with sovereignty requirements (self-hosted, no SaaS in data path). Simplifies underlay firewall rules to WireGuard UDP only. Establishes a clear three-layer policy model for the policy-as-code tooling design.
 
-### 8.1 What This Decision Does Not Cover
+### 9.1 What This Decision Does Not Cover
 
 This decision adopts Bowtie as the network overlay. The following items are explicitly out of scope and addressed by their respective issues:
 
@@ -172,7 +210,7 @@ This decision adopts Bowtie as the network overlay. The following items are expl
 
 ---
 
-## 9. Acceptance Criteria Status
+## 10. Acceptance Criteria Status
 
 | Criterion | Status | Notes |
 |---|---|---|
@@ -186,7 +224,7 @@ This decision adopts Bowtie as the network overlay. The following items are expl
 
 ---
 
-## 10. Related Documents
+## 11. Related Documents
 
 - [SPIRE Server HA Architecture](02-spire-server-ha-architecture.md) — upstream HA cluster that Bowtie overlay provides transport for.
 - [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) — attestation selectors and SPIFFE ID naming unaffected by overlay decision.
@@ -199,8 +237,9 @@ This decision adopts Bowtie as the network overlay. The following items are expl
 
 ---
 
-## 11. Revision History
+## 12. Revision History
 
 | Date | Author | Changes |
 |---|---|---|
 | 2026-02-27 | M. LaPane | Initial version. Adopt decision recorded. Bowtie/SPIRE relationship validated as independent parallel mechanisms. Bootstrap sequence documented. OPA pipeline design deferred to policy-as-code tooling design. Updated with three-layer architecture and Bowtie policy surface. |
+| 2026-03-03 | M. LaPane | Added Bowtie controller deployment topology (§8). Controller placement, HA properties, and Temporal workflow integration documented. |

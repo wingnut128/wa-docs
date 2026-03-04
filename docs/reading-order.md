@@ -79,12 +79,17 @@ graph LR
     A["01 Trust Domain &<br>Attestation Policy"] --> B["02 SPIRE Server<br>HA Architecture"]
     A --> C["03 Nested Topology<br>Patterns"]
     A --> D["04 Agent Connectivity<br>Requirements"]
+    A --> J["07 SPIRE Agent<br>Deployment"]
     C --> D
     D --> E["12 Network Overlay<br>Architecture"]
     E --> F["06 Firewall Rules"]
     E --> G["11 Policy as Code"]
     D --> H["05 DNS Resolution<br>Strategy"]
     C --> I["10 Legacy Integration"]
+    B --> K["08 Observability"]
+    J --> K
+    K --> L["09 Failure Modes<br>& Runbooks"]
+    I --> B
 ```
 
 ### Edge rationale
@@ -94,9 +99,14 @@ graph LR
 | 01 | 02 | HA recovery budgets derived from SVID TTLs in §5.3 |
 | 01 | 03 | Trust domain model constrains downstream design |
 | 01 | 04 | Attestation policy determines which ports/protocols agents need |
+| 01 | 07 | Agent deployment uses attestation plugins and SVID TTLs from 01 |
 | 03 | 04 | DMZ topology from Phase 2 closes connectivity gap |
 | 04 | 12 | Resolves DMZ + cross-CSP blockers identified in 04 |
 | 12 | 06 | Underlay simplifies to WireGuard UDP |
 | 12 | 11 | Three-layer policy model: Kyverno + Bowtie + OPA |
 | 04 | 05 | DNS outputs feed back into connectivity matrix |
 | 03 | 10 | JWT-SVID TTL from §5.3 applies to legacy integrations |
+| 10 | 02 | Kerberos router HA dependency on on-prem downstream |
+| 02 | 08 | Monitoring covers upstream, downstream, PostgreSQL, HAProxy components |
+| 07 | 08 | Agent health endpoints feed into observability stack |
+| 08 | 09 | Alerting rules trigger SRE runbooks |

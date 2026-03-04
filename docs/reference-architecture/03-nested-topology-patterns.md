@@ -4,7 +4,7 @@
 
 Workload Identity | TBD
 
-**Status:** 🔄 In Review (Phase 1 complete) | **Priority:** High
+**Status:** 🔄 In Progress (Phase 2) | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -200,21 +200,113 @@ The autonomous operation window — the period during which workloads continue t
 
 ---
 
-## 6. Open Items Feeding Phase 2 and Phase 3
+## 6. Phase 2: Per-Segment Topology Specification
 
-| Priority | Item | Owner | Feeds Into |
-|---|---|---|---|
-| P1 | Inventory workload SVID types per segment (X.509 vs JWT-SVID). JWT-SVID consumers in isolated segments have hard upstream connectivity requirements. | Platform / App Teams | Phase 2 DMZ topology, Phase 3 TTL design |
-| P1 | Confirm TPM availability on on-prem bare metal for downstream server node attestation. | Infrastructure Team | Phase 2 on-prem topology, [Attestation Policy](01-trust-domain-and-attestation-policy.md) open item |
-| P2 | Determine whether downstream servers require HSM-backed intermediate CA keys, or whether software keys with short TTLs are acceptable. Has procurement implications. | Security Architect + CISO | Phase 3 trust chain design, [HA Architecture](02-spire-server-ha-architecture.md) |
-| P2 | Define acceptable workload SVID TTLs and resulting downstream server HA tier requirements per segment. Phase 3 outputs must inform Phase 2 segment designs. | SRE + Security Architect | Phase 3 TTL table, Phase 2 HA spec |
-| P3 | Confirm whether any existing internal PKI can issue bootstrap certificates for x509pop attestation on on-prem downstream servers. | Security / PKI Team | Phase 2 on-prem and DMZ topology |
+Phase 2 applies the conceptual model from Phase 1 to specific environment segments. Each segment requires a downstream server placement decision, a bootstrap credential selection, and an HA tier assignment.
+
+### 6.1 DMZ Segment Topology
+
+The DMZ topology decision from [Agent Connectivity Requirements](04-agent-connectivity-requirements.md) §4.5 is resolved by the [Network Overlay Architecture](12-network-overlay-architecture.md). With the Bowtie/WireGuard overlay, DMZ nodes are WireGuard peers like any other segment — connectivity is no longer a blocker.
+
+**Decision:** Deploy a dedicated downstream SPIRE server in the DMZ segment for **failure domain isolation**, not for connectivity reasons.
+
+Rationale:
+- If the DMZ shares a downstream server with the on-prem segment, a failure in the on-prem downstream affects DMZ workloads and vice versa
+- DMZ workloads often have elevated security requirements — an independent failure domain limits blast radius
+- The DMZ downstream server connects outbound to the upstream through the Bowtie overlay on port 8081
+
+| Attribute | DMZ Downstream |
+|---|---|
+| **SPIRE Servers** | 2 instances (active-active) |
+| **Datastore** | PostgreSQL (dedicated, small-scale — DMZ workload count is low) |
+| **Bootstrap credential** | `x509pop` or cloud IID. `join_token` is not permitted for DMZ per §3.2. |
+| **HA budget** | 1 hour (SVID TTL) |
+| **Node attestation** | Platform-specific per §3.2 of this document |
+
+### 6.2 Staging and Development Environments
+
+**Decision:** Staging and development environments use separate downstream SPIRE servers from production.
+
+Rationale:
+- Registration entry isolation: staging entries cannot accidentally affect production workloads
+- Independent failure domains: staging SPIRE issues do not impact production
+- The SPIFFE ID path includes the `environment` segment (e.g., `staging`, `dev`) per [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) §4.1, providing identity-level isolation
+
+Staging downstream servers share the same upstream management cluster as production. The single trust domain (`spiffe://yourorg.com`) covers all environments. Environment isolation is enforced at the SPIFFE ID path level and registration entry scoping, not at the trust domain level.
+
+### 6.3 Per-Segment Summary
+
+| Segment | Downstream Server | Bootstrap Credential | HA Tier | Upstream Connection |
+|---|---|---|---|---|
+| GCP (production) | Dedicated GCP downstream | `gcp_iit` | 1 hour (SVID TTL) | Via Bowtie overlay |
+| Azure (production) | Dedicated Azure downstream | `azure_msi` | 1 hour (SVID TTL) | Via Bowtie overlay |
+| AWS (production) | Dedicated AWS downstream | `aws_iid` | 1 hour (SVID TTL) | Via Bowtie overlay |
+| On-prem (production) | Dedicated on-prem downstream | `tpm_devid` (preferred) or `x509pop` | 1 hour (SVID TTL) | Direct (same fabric) |
+| DMZ | Dedicated DMZ downstream | `x509pop` or cloud IID | 1 hour (SVID TTL) | Via Bowtie overlay |
+| GCP (staging) | Separate staging downstream | `gcp_iit` | 1 hour (SVID TTL) | Via Bowtie overlay |
+| Azure (staging) | Separate staging downstream | `azure_msi` | 1 hour (SVID TTL) | Via Bowtie overlay |
+| AWS (staging) | Separate staging downstream | `aws_iid` | 1 hour (SVID TTL) | Via Bowtie overlay |
 
 ---
 
-## 7. Related Documents
+## 7. Phase 2+: Trust Chain Refinement
 
-- `01-trust-domain-and-attestation-policy.md` — Trust domain model and SPIFFE ID naming constrains registration entry design (Phase 4)
-- `02-spire-server-ha-architecture.md` — Upstream HA cluster design; intermediate CA TTLs feed back into CA rotation design
-- `04-agent-connectivity-requirements.md` — DMZ connectivity decision (Option A) is blocked on Phase 2 DMZ topology output from this document
-- `06-firewall-rules.md` — Firewall rules for downstream-to-upstream server traffic depend on Phase 2 placement decisions
+### 7.1 HSM-Backed Intermediate CA Decision
+
+**Decision (pending CISO approval):** Downstream servers use software-backed intermediate CA keys with a short TTL (target: 12 hours).
+
+Rationale:
+- HSM at every downstream server location adds significant procurement and operational cost (especially for cloud downstreams)
+- Short intermediate CA TTLs limit the exposure window if a key is compromised
+- Software keys are acceptable if the intermediate CA TTL is sufficiently short that compromise + exploitation within the TTL window is operationally impractical
+- The upstream root CA remains HSM-backed per [SPIRE Server HA Architecture](02-spire-server-ha-architecture.md) §3.2
+
+> **Open item:** This decision requires formal approval from the Security Architect and CISO. If the risk assessment requires HSM-backed intermediate CAs, procurement must account for HSMs in each cloud region and on-premises segment.
+
+### 7.2 Workload SVID TTL Per Segment
+
+The default 1-hour X.509 SVID TTL from [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) §5.3 applies to all segments. Segment-specific overrides:
+
+| Segment | X.509 SVID TTL | JWT-SVID TTL | Rationale |
+|---|---|---|---|
+| All production segments | 1 hour | 5 minutes | Default per attestation policy |
+| Staging/dev environments | 1 hour | 5 minutes | Same TTLs as production for consistency |
+| DMZ | 1 hour | 5 minutes | No deviation — DMZ security posture is enforced at the network layer (Bowtie) and attestation layer, not TTLs |
+
+> **Note:** Per-workload TTL overrides are supported via registration entry configuration but should be used sparingly. Any deviation from the default TTL must be documented with rationale and approved by the security team.
+
+### 7.3 Existing PKI for x509pop Attestation
+
+For on-premises segments where TPM is unavailable, `x509pop` attestation requires certificates from an existing internal PKI.
+
+**Assessment:** The existing internal PKI (operated by the Security/PKI team) can issue certificates for SPIRE agent `x509pop` attestation, subject to:
+
+- Certificates must have a dedicated OU or extension identifying them as SPIRE bootstrap credentials
+- Certificate TTL should match the node lifecycle (1 year for long-lived bare metal, shorter for VMs)
+- Revocation via CRL/OCSP must be supported and checked by the SPIRE server's `x509pop` verifier
+- The PKI team must provision certificates during node build (Ansible/Puppet integration)
+
+> **Open item:** Confirm with the PKI team that the existing CA infrastructure can handle the additional issuance volume and that the CRL distribution point is reachable from the SPIRE server.
+
+---
+
+## 8. Open Items
+
+| Priority | Item | Owner | Feeds Into |
+|---|---|---|---|
+| **P1** | Inventory workload SVID types per segment (X.509 vs JWT-SVID). JWT-SVID consumers in isolated segments have hard upstream connectivity requirements. | Platform / App Teams | DMZ topology, TTL design |
+| **P1** | Confirm TPM availability on on-prem bare metal for downstream server node attestation. | Infrastructure Team | On-prem topology, [Attestation Policy](01-trust-domain-and-attestation-policy.md) open item |
+| **P1** | HSM-backed intermediate CA decision: formal CISO approval for software keys with short TTLs. | Security Architect + CISO | Trust chain design, [HA Architecture](02-spire-server-ha-architecture.md) |
+| **P2** | Confirm existing PKI can issue x509pop bootstrap certificates at required volume. | Security / PKI Team | On-prem and DMZ topology |
+| **P2** | Define intermediate CA TTL value (target: 12 hours) with SRE and Security teams. | SRE + Security Architect | Recovery budgets, downstream autonomous operation window |
+
+---
+
+## 9. Related Documents
+
+- [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) — trust domain model, SPIFFE ID naming, SVID TTLs
+- [SPIRE Server HA Architecture](02-spire-server-ha-architecture.md) — upstream HA cluster design; intermediate CA TTLs feed into CA rotation design
+- [Agent Connectivity Requirements](04-agent-connectivity-requirements.md) — DMZ connectivity resolved by overlay; Phase 2 scope updated
+- [Network Overlay Architecture](12-network-overlay-architecture.md) — Bowtie overlay resolves DMZ connectivity
+- [Firewall Rules](06-firewall-rules.md) — firewall rules for downstream-to-upstream server traffic depend on placement decisions
+- [SPIRE Agent Deployment](07-spire-agent-deployment.md) — agent deployment per platform builds on these topology decisions

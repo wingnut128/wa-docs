@@ -4,11 +4,12 @@
 
 Workload Identity | TBD
 
-**Status:** 🔄 In Progress (Phase 1 complete) | **Priority:** High
+**Status:** 🔄 In Progress (Phase 2) | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
-**Feeds into:** [Firewall Rules](06-firewall-rules.md), [DNS Resolution Strategy](05-dns-resolution-strategy.md)
+**Depends on:** [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md), [Nested Topology Patterns](03-nested-topology-patterns.md)
+**Feeds into:** [Firewall Rules](06-firewall-rules.md), [DNS Resolution Strategy](05-dns-resolution-strategy.md), [Network Overlay Architecture](12-network-overlay-architecture.md)
 
 ---
 
@@ -140,20 +141,89 @@ This matrix is the primary deliverable of Phase 1. Rows marked **TBD** require v
 
 ---
 
-## 6. Phase 2 Prerequisites and Open Gaps
+## 6. Phase 2: Overlay-Resolved Connectivity Model
 
-| Priority | Gap / Open Item | Owner | Blocking | Resolution Path |
+### 6.1 Blockers Resolved
+
+The [Network Overlay Architecture](12-network-overlay-architecture.md) resolves the two primary Phase 2 blockers:
+
+| Previous Blocker | Resolution |
+|---|---|
+| **DMZ connectivity** (§4.5 Options A/B/C) | DMZ nodes are Bowtie/WireGuard peers. No proxy or reclassification needed for connectivity. A dedicated DMZ downstream server is deployed for failure domain isolation per [Nested Topology Patterns](03-nested-topology-patterns.md) §6.1. |
+| **Cross-CSP SNAT analysis** (§4.1–4.3) | WireGuard tunnels preserve source IPs inside the overlay. SNAT on the underlay (VPN, Direct Connect, ExpressRoute) does not affect SPIRE protocol correctness. TLS inspection risk is eliminated — SPIRE mTLS runs inside the WireGuard tunnel. |
+
+### 6.2 Revised Connectivity Model
+
+With the Bowtie overlay, SPIRE communication flows are split into two layers:
+
+**Overlay (Bowtie/WireGuard):**
+
+| Flow | Source | Destination | Overlay Port | Enforced By |
 |---|---|---|---|---|
-| **P1** | DMZ architecture decision: dedicated downstream server vs. TCP proxy vs. isolated segment reclassification. | Security Architect + Network Eng. | Phase 2 DMZ mapping | Targeted review session. |
-| **P1** | Confirmation of inter-segment path types for GCP (VPN vs Interconnect), Azure (ExpressRoute vs VPN Gateway), and AWS (Direct Connect vs Site-to-Site VPN) in each environment. | Infrastructure Team | Phase 4 NAT/proxy analysis | Review existing network diagrams. |
-| **P2** | Confirm on-premises SPIRE server VLAN / subnet CIDRs for use in firewall rule templates ([Firewall Rules](06-firewall-rules.md)). | Platform Team | Firewall rule templates | Confirm during [HA architecture](02-spire-server-ha-architecture.md) work. |
-| **P2** | Enumerate proxy or NAT gateways in the egress path for GCP, Azure, and AWS outbound traffic to on-prem. | Cloud Networking Team | Phase 4 NAT/proxy analysis | Review GCP Cloud NAT, Azure NAT Gateway, and AWS NAT Gateway assignment per VPC/VNet. |
-| **P3** | Validate whether any intermediate proxies (Squid, Zscaler, etc.) are in the path for GCP, Azure, and AWS outbound traffic. | Security / Cloud Networking | Phase 4 NAT/proxy analysis | Review egress proxy configurations. gRPC requires HTTP/2 CONNECT support or direct TCP. |
-| **P3** | Confirm staging/dev environment isolation: separate SPIRE downstream servers vs. shared with prod. | Platform Team | Trust domain design | Align with [Attestation Policy](01-trust-domain-and-attestation-policy.md) environment segment decisions. |
+| Agent → Downstream SPIRE Server | SPIRE Agent (any segment) | Downstream SPIRE Server (same segment) | 8081/TCP gRPC TLS | Bowtie flow intent policy |
+| Downstream → Upstream SPIRE Server | Downstream SPIRE Server | Upstream SPIRE Server (on-prem HA cluster) | 8081/TCP gRPC TLS mTLS | Bowtie flow intent policy |
+| Monitoring → SPIRE health endpoint | Monitoring system | SPIRE Server / Agent | 8080/TCP HTTP | Bowtie flow intent policy |
+| Workload → Agent (local) | Workload process | SPIRE Agent (same node) | Unix socket | N/A (node-local) |
+
+**Underlay (physical/cloud network):**
+
+| Flow | Source | Destination | Underlay Port | Notes |
+|---|---|---|---|---|
+| WireGuard tunnel (all segments) | Bowtie agent | Bowtie agent / controller | 51820/UDP (default) | Only port needed on underlay firewalls for SPIRE traffic |
+| Bowtie controller management | Bowtie controller | Bowtie agents | Controller-specific | Per Bowtie documentation |
+
+### 6.3 Updated Connectivity Matrix
+
+This matrix supersedes the Phase 1 draft (§5) with overlay-aware flows. Rows previously marked **TBD** for DMZ are now resolved.
+
+| Source | Destination | Layer | Port | Protocol | Notes |
+|---|---|---|---|---|---|
+| GCP agent (GKE/GCE) | GCP downstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS | Bowtie flow policy permits |
+| AWS agent (EKS/EC2) | AWS downstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS | Bowtie flow policy permits |
+| Azure agent (AKS/VM) | Azure downstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS | Bowtie flow policy permits |
+| On-prem agent (K8s/BM/VM) | On-prem downstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS | Same-fabric; overlay still used for policy enforcement |
+| DMZ agent | DMZ downstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS | **Resolved** — DMZ is standard overlay peers |
+| GCP downstream server | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | Downstream-to-upstream sync |
+| Azure downstream server | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | Downstream-to-upstream sync |
+| AWS downstream server | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | Downstream-to-upstream sync |
+| On-prem downstream server | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | Same fabric but overlay-routed |
+| DMZ downstream server | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | DMZ→upstream via overlay |
+| Staging downstream servers (all) | On-prem upstream SPIRE server | Overlay | 8081 | TCP/gRPC TLS mTLS | Separate downstream per staging segment |
+| Monitoring (any segment) | SPIRE Server / Agent health | Overlay | 8080 | TCP/HTTP | Restrict to monitoring policy group |
+| CI/CD / operator | SPIRE Server admin API | Overlay or local socket | 8081 | TCP/gRPC TLS | Restrict to admin policy group |
+| WireGuard peers (all nodes) | WireGuard peers / controller | Underlay | 51820/UDP | WireGuard | Only underlay rule needed for SPIRE |
+| Workload process | SPIRE Agent (same node) | Local | Unix socket | N/A | No network rule needed |
+
+### 6.4 SPIRE Server Subnet CIDRs
+
+The SPIRE server VLAN/subnet CIDR is used in overlay flow intent policies (not underlay firewall rules). Pending confirmation with the platform team:
+
+| Segment | SPIRE Server CIDR | Status |
+|---|---|---|
+| On-prem upstream (DC1) | TBD | Pending platform team confirmation |
+| On-prem upstream (DC2) | TBD | Pending platform team confirmation |
+| On-prem downstream | TBD | Pending platform team confirmation |
+| DMZ downstream | TBD | Pending platform team confirmation |
+| GCP downstream | Per VPC subnet assignment | Cloud-managed |
+| Azure downstream | Per VNet subnet assignment | Cloud-managed |
+| AWS downstream | Per VPC subnet assignment | Cloud-managed |
 
 ---
 
-## 7. Security Considerations
+## 7. Remaining Open Items
+
+| Priority | Gap / Open Item | Owner | Status |
+|---|---|---|---|
+| ~~**P1**~~ | ~~DMZ architecture decision~~ | ~~Security Architect~~ | **Resolved** — dedicated DMZ downstream via overlay |
+| ~~**P1**~~ | ~~Cross-CSP path type confirmation~~ | ~~Infrastructure Team~~ | **Resolved** — overlay eliminates SNAT/TLS concerns |
+| **P2** | Confirm on-premises SPIRE server VLAN / subnet CIDRs | Platform Team | Open — needed for overlay policy definitions |
+| ~~**P2**~~ | ~~Enumerate proxy/NAT gateways in egress path~~ | ~~Cloud Networking~~ | **Resolved** — overlay tunnels bypass NAT/proxy |
+| ~~**P3**~~ | ~~Validate TLS inspection appliances in path~~ | ~~Security~~ | **Resolved** — SPIRE mTLS inside WireGuard tunnel |
+| ~~**P3**~~ | ~~Staging/dev isolation decision~~ | ~~Platform Team~~ | **Resolved** — separate downstream servers per [Nested Topology Patterns](03-nested-topology-patterns.md) §6.2 |
+
+---
+
+## 8. Security Considerations
 
 ### 7.1 Least-Privilege Firewall Posture
 
@@ -184,12 +254,26 @@ The SPIRE server admin API must not be exposed to general network access. Option
 
 ---
 
-## 8. Next Steps (Phase 2 Prerequisites)
+## 9. Next Steps
 
-| Action | Owner |
-|---|---|
-| Schedule DMZ architecture decision session (§4.5 / Gap P1) | Security Architect |
-| Confirm GCP, Azure, and AWS inter-segment path types (VPN vs. Interconnect / ExpressRoute / Direct Connect) per environment | Infrastructure Team |
-| Review GCP Cloud NAT, Azure NAT Gateway, and AWS NAT Gateway configurations for potential source IP rewriting | Cloud Networking |
-| Confirm SPIRE server VLAN/CIDR with platform team to enable firewall rule drafting in [Firewall Rules](06-firewall-rules.md) | Platform Team |
-| Identify egress proxy and TLS inspection appliances in GCP, Azure, and AWS outbound paths | Security / Cloud Networking |
+| Action | Owner | Status |
+|---|---|---|
+| ~~Schedule DMZ architecture decision session~~ | ~~Security Architect~~ | **Done** — resolved by overlay |
+| ~~Confirm cross-CSP path types~~ | ~~Infrastructure Team~~ | **Done** — overlay eliminates concern |
+| ~~Review NAT gateway configurations~~ | ~~Cloud Networking~~ | **Done** — overlay eliminates concern |
+| Confirm SPIRE server VLAN/CIDR with platform team for overlay policy definitions | Platform Team | Open |
+| ~~Identify egress proxy and TLS inspection appliances~~ | ~~Security / Cloud Networking~~ | **Done** — overlay eliminates concern |
+| Define Bowtie flow intent policies for SPIRE traffic per segment | Security + Platform Team | Open |
+| Document WireGuard underlay firewall rules in [Firewall Rules](06-firewall-rules.md) | Platform Team | Open |
+
+---
+
+## 10. Related Documents
+
+- [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) — attestation policy determines which ports/protocols agents need
+- [Nested Topology Patterns](03-nested-topology-patterns.md) — DMZ topology and per-segment downstream server decisions
+- [Network Overlay Architecture](12-network-overlay-architecture.md) — resolves Phase 2 blockers; overlay provides authenticated transport
+- [DNS Resolution Strategy](05-dns-resolution-strategy.md) — DNS outputs feed into connectivity matrix
+- [Firewall Rules](06-firewall-rules.md) — consumes connectivity matrix; underlay rules are now WireGuard UDP only
+- [SPIRE Agent Deployment](07-spire-agent-deployment.md) — agent-to-server connectivity is the primary concern of this document
+- [Observability](08-observability.md) — health check port (8080) in connectivity matrix

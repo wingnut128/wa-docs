@@ -1,0 +1,84 @@
+site_name: SPIFFE/SPIRE Workload Identity — Reference Architecture
+site_url: https://wingnut128.github.io/wa-docs/
+repo_url: https://github.com/wingnut128/wa-docs
+repo_name: wingnut128/wa-docs
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+  - tables
+  - attr_list
+  - md_in_html
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Reading Order: reading-order.md
+  - Reference Architecture:
+      - Core Design:
+          - "01 — Trust Domain & Attestation Policy": reference-architecture/01-trust-domain-and-attestation-policy.md
+          - "02 — SPIRE Server HA Architecture": reference-architecture/02-spire-server-ha-architecture.md
+          - "03 — Nested Topology Patterns": reference-architecture/03-nested-topology-patterns.md
+      - Network:
+          - "04 — Agent Connectivity Requirements": reference-architecture/04-agent-connectivity-requirements.md
+          - "05 — DNS Resolution Strategy": reference-architecture/05-dns-resolution-strategy.md
+          - "06 — Firewall Rules": reference-architecture/06-firewall-rules.md
+          - "12 — Network Overlay Architecture": reference-architecture/12-network-overlay-architecture.md
+      - Operations:
+          - "07 — SPIRE Agent Deployment": reference-architecture/07-spire-agent-deployment.md
+          - "08 — Observability": reference-architecture/08-observability.md
+          - "09 — Failure Modes & Runbooks": reference-architecture/09-failure-modes-and-runbooks.md
+      - Policy & Integration:
+          - "10 — Legacy Integration": reference-architecture/10-legacy-integration.md
+          - "11 — Policy as Code": reference-architecture/11-policy-as-code.md
+  - Proof of Concept:
+      - poc/index.md
+      - "01 — PoC Architecture": poc/01-poc-architecture.md
+      - "02 — Crossplane Setup": poc/02-crossplane-setup.md
+      - "03 — Upstream SPIRE Cluster": poc/03-upstream-spire-cluster.md
+      - "04 — GCP Downstream": poc/04-gcp-downstream.md
+      - "05 — AWS Downstream": poc/05-aws-downstream.md
+      - "06 — Temporal Orchestration": poc/06-temporal-orchestration.md
+      - "07 — Failure Scenario Testing": poc/07-failure-scenario-testing.md
+      - "08 — Findings & Feedback": poc/08-findings-and-feedback.md

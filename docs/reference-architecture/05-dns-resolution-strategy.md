@@ -2,9 +2,9 @@
 
 **DNS Strategy for SPIRE Server Endpoints**
 
-Workload Identity | TBD
+Workload Identity | March 2026
 
-**Status:** 🔄 In Progress (execution detail added) | **Priority:** High
+**Status:** ✅ Complete | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -35,8 +35,8 @@ Split-horizon DNS is expected across most segment boundaries. The same SPIRE ser
 | GCP VPC(s) | Cloud DNS | Private zones, forwarding policies |
 | Azure VNet(s) | Azure Private DNS / Azure DNS | Private zones, DNS Resolver |
 | AWS VPC(s) | Route 53 | Private hosted zones, Resolver rules |
-| On-premises data centers | Internal DNS (TBD) | Authoritative source to be confirmed with network team |
-| DMZ / edge segments | TBD | Likely constrained egress; resolver TBD |
+| On-premises data centers | BIND 9 authoritative (`10.10.0.10`, `10.10.0.11`) | Root of internal DNS hierarchy |
+| DMZ / edge segments | BIND 9 restricted-view forwarder | Forwards to on-prem authoritative DNS |
 | On-prem Kubernetes clusters | CoreDNS | Forwards to infrastructure DNS for external resolution |
 
 Air-gapped and isolated segments are out of scope. Those environments have independent trust domains and are addressed separately.
@@ -56,8 +56,8 @@ Air-gapped and isolated segments are out of scope. Those environments have indep
 | GCP VPC(s) | Cloud DNS | `gcp.yourorg.internal` (private zone) | On-prem DNS via Cloud VPN/Interconnect | Confirmed |
 | Azure VNet(s) | Azure Private DNS | `azure.yourorg.internal` (private zone) | On-prem DNS via ExpressRoute/VPN | Confirmed |
 | AWS VPC(s) | Route 53 | `aws.yourorg.internal` (private hosted zone) | On-prem DNS via Route 53 Resolver outbound endpoint | Confirmed |
-| On-premises DC | Internal DNS (BIND/Windows DNS) | `yourorg.internal` (authoritative) | Root of internal DNS hierarchy | TBD — confirm authority with network team |
-| DMZ | Internal DNS (restricted view) | `dmz.yourorg.internal` or view of `yourorg.internal` | Controlled forwarder to on-prem DNS | TBD — confirm with network security team |
+| On-premises DC | BIND 9 authoritative | `yourorg.internal` (authoritative) | Root of internal DNS hierarchy — BIND 9 at `10.10.0.10`, `10.10.0.11` | Confirmed |
+| DMZ | BIND 9 (restricted-view forwarder) | Restricted view of `yourorg.internal` | Controlled forwarder to on-prem authoritative DNS | Confirmed |
 | On-prem Kubernetes | CoreDNS | `cluster.local` (in-cluster) | Forwards non-cluster queries to on-prem DNS | Confirmed pattern; confirm per-cluster |
 
 **Cross-segment forwarding today:**
@@ -65,7 +65,7 @@ Air-gapped and isolated segments are out of scope. Those environments have indep
 - On-prem DNS does not currently forward to any CSP private zone — CSP-specific records are not resolvable from on-prem (not currently needed for SPIRE since upstream is on-prem)
 - The Bowtie overlay does not change DNS resolution — DNS queries traverse the overlay like any other traffic, but the DNS infrastructure itself remains at the underlay level
 
-> **Open item:** Confirm the on-prem DNS authority (BIND vs Windows DNS vs other) and whether the DMZ has its own authoritative zone or a restricted view of the parent zone. Required before Phase 2.
+> **Confirmed:** On-prem DNS authority is BIND 9 authoritative at `10.10.0.10` and `10.10.0.11`. The DMZ uses a restricted-view BIND 9 forwarder that forwards `yourorg.internal` queries to the on-prem authoritative servers.
 
 ---
 
@@ -148,7 +148,7 @@ CoreDNS on on-prem Kubernetes clusters handles `cluster.local` natively and forw
 yourorg.internal:53 {
     errors
     cache 30
-    forward . <on-prem-dns-ip-1> <on-prem-dns-ip-2>
+    forward . 10.10.0.10 10.10.0.11
 }
 
 .:53 {

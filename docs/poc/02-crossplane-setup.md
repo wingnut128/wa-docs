@@ -4,7 +4,7 @@
 
 PoC Deployment | March 2026
 
-**Status:** 🔄 In Progress | **Priority:** High
+**Status:** ✅ Complete | **Priority:** High
 
 ---
 
@@ -76,7 +76,7 @@ kind: ProviderConfig
 metadata:
   name: gcp-default
 spec:
-  projectID: <your-gcp-project-id>
+  projectID: yourorg-spire-poc
   credentials:
     source: Secret
     secretRef:
@@ -96,7 +96,7 @@ spec:
   package: xpkg.upbound.io/upbound/provider-family-aws:v1.12
 ```
 
-**AWS credentials:** Create an IAM user or role with the following policies:
+**AWS credentials:** Create an IAM user or role in account `123456789012` with the following policies:
 - `AmazonEKSClusterPolicy`
 - `AmazonEKSWorkerNodePolicy`
 - `AmazonVPCFullAccess`
@@ -141,7 +141,7 @@ spec:
         spec:
           forProvider:
             autoCreateSubnetworks: false
-            project: <your-gcp-project-id>
+            project: yourorg-spire-poc
     - name: subnet
       base:
         apiVersion: compute.gcp.upbound.io/v1beta1
@@ -332,10 +332,10 @@ spec:
 
 | Item | Status |
 |---|---|
-| Confirm GCP project ID and billing account | Pending |
-| Confirm AWS account and IAM permissions | Pending |
+| Confirm GCP project ID and billing account | Done — `yourorg-spire-poc` |
+| Confirm AWS account and IAM permissions | Done — account `123456789012` |
 | Decide on Crossplane version (stable vs. latest) | Use latest stable |
-| Validate provider version compatibility with target K8s version | Pending |
+| Validate provider version compatibility with target K8s version | Done |
 
 ---
 

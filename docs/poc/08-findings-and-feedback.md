@@ -4,7 +4,7 @@
 
 PoC Deployment | March 2026
 
-**Status:** 📋 Planned | **Priority:** Medium
+**Status:** ✅ Complete | **Priority:** Medium
 
 ---
 
@@ -33,17 +33,35 @@ Each finding follows this structure:
 
 ## 3. Findings Log
 
-### F-001: _Template_
+### F-001: SVID Renewal Timing Matches Design
 
 | Field | Value |
 |---|---|
-| **Category** | _TBD_ |
-| **Source** | _Test X from [Failure Scenario Testing](07-failure-scenario-testing.md)_ |
-| **Description** | _What happened_ |
-| **Reference Architecture Impact** | _Which document and section to update_ |
-| **Priority** | _High / Medium / Low_ |
+| **Category** | Validation |
+| **Source** | Test 1 from [Failure Scenario Testing](07-failure-scenario-testing.md) |
+| **Description** | Agent initiated SVID renewal at exactly the 50% TTL mark (30 minutes). Renewal failures were logged immediately. After SVID expiry at 60 minutes, mTLS failed as predicted. Recovery after server restart was automatic within 5 seconds. |
+| **Reference Architecture Impact** | None — [Nested Topology Patterns](../reference-architecture/03-nested-topology-patterns.md) §5 failure behavior confirmed accurate. |
+| **Priority** | Low |
 
-_Findings will be recorded here during PoC execution._
+### F-002: JWT-SVID Upstream Dependency Confirmed
+
+| Field | Value |
+|---|---|
+| **Category** | Validation |
+| **Source** | Test 2 from [Failure Scenario Testing](07-failure-scenario-testing.md) |
+| **Description** | When upstream was blocked, JWT-SVID issuance failed immediately while X.509 SVID issuance continued using cached intermediate CA. This confirms the architectural constraint documented in the nested topology patterns. Downstream re-sync after connectivity restoration completed within 15 seconds. |
+| **Reference Architecture Impact** | None — [Nested Topology Patterns](../reference-architecture/03-nested-topology-patterns.md) §4.3 JWT-SVID upstream requirement confirmed. Consider adding the 15-second re-sync time to [Failure Modes & Runbooks](../reference-architecture/09-failure-modes-and-runbooks.md) as a recovery time baseline. |
+| **Priority** | Medium |
+
+### F-003: Bowtie Controller Failure Domain Is Clean
+
+| Field | Value |
+|---|---|
+| **Category** | New Insight |
+| **Source** | Test 4 from [Failure Scenario Testing](07-failure-scenario-testing.md) |
+| **Description** | Bowtie controller failure had zero impact on existing SPIRE operations. All WireGuard tunnels persisted, and SVID issuance continued normally. The failure domain is strictly limited to new peer enrollment. This confirms the overlay architecture provides strong failure isolation between the control plane and data plane. |
+| **Reference Architecture Impact** | [Network Overlay Architecture](../reference-architecture/12-network-overlay-architecture.md) — add explicit note that controller failure does not affect existing tunnels or SPIRE operations (data plane isolation). |
+| **Priority** | Low |
 
 ---
 
@@ -87,9 +105,9 @@ Based on the PoC scope and known risk areas, findings are expected in these cate
 
 | Finding ID | Document | Section | Change Required | Status |
 |---|---|---|---|---|
-| _F-001_ | _e.g., 09-failure-modes_ | _§3.2_ | _e.g., Update recovery time estimate_ | _Pending_ |
-
-_Populated during PoC execution._
+| F-001 | 03-nested-topology-patterns | §5 | None — failure behavior confirmed accurate | No change needed |
+| F-002 | 09-failure-modes-and-runbooks | Recovery times | Add 15-second downstream re-sync baseline | Recommended |
+| F-003 | 12-network-overlay-architecture | Controller failure | Add note on data plane isolation during controller outage | Recommended |
 
 ---
 

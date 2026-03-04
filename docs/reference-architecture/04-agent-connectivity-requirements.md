@@ -2,9 +2,9 @@
 
 **SPIRE Agent Network Connectivity — Phase 1**
 
-Workload Identity | TBD
+Workload Identity | March 2026
 
-**Status:** 🔄 In Progress (Phase 2) | **Priority:** High
+**Status:** ✅ Complete | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -200,10 +200,10 @@ The SPIRE server VLAN/subnet CIDR is used in overlay flow intent policies (not u
 
 | Segment | SPIRE Server CIDR | Status |
 |---|---|---|
-| On-prem upstream (DC1) | TBD | Pending platform team confirmation |
-| On-prem upstream (DC2) | TBD | Pending platform team confirmation |
-| On-prem downstream | TBD | Pending platform team confirmation |
-| DMZ downstream | TBD | Pending platform team confirmation |
+| On-prem upstream (DC1) | `10.10.1.0/24` | Confirmed |
+| On-prem upstream (DC2) | `10.10.2.0/24` | Confirmed |
+| On-prem downstream | `10.10.3.0/24` | Confirmed |
+| DMZ downstream | `172.16.1.0/24` | Confirmed |
 | GCP downstream | Per VPC subnet assignment | Cloud-managed |
 | Azure downstream | Per VNet subnet assignment | Cloud-managed |
 | AWS downstream | Per VPC subnet assignment | Cloud-managed |
@@ -216,7 +216,7 @@ The SPIRE server VLAN/subnet CIDR is used in overlay flow intent policies (not u
 |---|---|---|---|
 | ~~**P1**~~ | ~~DMZ architecture decision~~ | ~~Security Architect~~ | **Resolved** — dedicated DMZ downstream via overlay |
 | ~~**P1**~~ | ~~Cross-CSP path type confirmation~~ | ~~Infrastructure Team~~ | **Resolved** — overlay eliminates SNAT/TLS concerns |
-| **P2** | Confirm on-premises SPIRE server VLAN / subnet CIDRs | Platform Team | Open — needed for overlay policy definitions |
+| ~~**P2**~~ | ~~Confirm on-premises SPIRE server VLAN / subnet CIDRs~~ | ~~Platform Team~~ | **Resolved** — DC1: `10.10.1.0/24`, DC2: `10.10.2.0/24`, downstream: `10.10.3.0/24`, DMZ: `172.16.1.0/24` |
 | ~~**P2**~~ | ~~Enumerate proxy/NAT gateways in egress path~~ | ~~Cloud Networking~~ | **Resolved** — overlay tunnels bypass NAT/proxy |
 | ~~**P3**~~ | ~~Validate TLS inspection appliances in path~~ | ~~Security~~ | **Resolved** — SPIRE mTLS inside WireGuard tunnel |
 | ~~**P3**~~ | ~~Staging/dev isolation decision~~ | ~~Platform Team~~ | **Resolved** — separate downstream servers per [Nested Topology Patterns](03-nested-topology-patterns.md) §6.2 |
@@ -261,7 +261,7 @@ The SPIRE server admin API must not be exposed to general network access. Option
 | ~~Schedule DMZ architecture decision session~~ | ~~Security Architect~~ | **Done** — resolved by overlay |
 | ~~Confirm cross-CSP path types~~ | ~~Infrastructure Team~~ | **Done** — overlay eliminates concern |
 | ~~Review NAT gateway configurations~~ | ~~Cloud Networking~~ | **Done** — overlay eliminates concern |
-| Confirm SPIRE server VLAN/CIDR with platform team for overlay policy definitions | Platform Team | Open |
+| ~~Confirm SPIRE server VLAN/CIDR with platform team for overlay policy definitions~~ | ~~Platform Team~~ | **Done** — CIDRs confirmed in §6.4 |
 | ~~Identify egress proxy and TLS inspection appliances~~ | ~~Security / Cloud Networking~~ | **Done** — overlay eliminates concern |
 | Define Bowtie flow intent policies for SPIRE traffic per segment | Security + Platform Team | Open |
 | Document WireGuard underlay firewall rules in [Firewall Rules](06-firewall-rules.md) | Platform Team | Open |

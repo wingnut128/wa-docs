@@ -4,7 +4,7 @@
 
 Workload Identity | March 2026
 
-**Status:** 🔄 In Progress | **Priority:** Medium
+**Status:** ✅ Complete | **Priority:** Medium
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -192,11 +192,10 @@ NodeAttestor "azure_msi" {
 - The SPIRE server validates the token against Azure AD public keys
 - Server-side configuration restricts accepted subscription IDs and resource groups
 
-### 3.4 On-Premises (TBD — Pending TPM Inventory)
+### 3.4 On-Premises (`tpm_devid`)
 
-The on-premises node attestation plugin is pending hardware TPM inventory ([Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) §7, open item). Three options in order of preference:
+Fleet audit confirmed TPM 2.0 on all on-premises rack servers (Dell R750, HP DL380 Gen10+). All on-prem nodes use `tpm_devid` for node attestation.
 
-**Option A — `tpm_devid` (preferred)**
 ```hcl
 NodeAttestor "tpm_devid" {
     plugin_data {
@@ -206,24 +205,12 @@ NodeAttestor "tpm_devid" {
 }
 ```
 
-**Option B — `x509pop` (fallback)**
-```hcl
-NodeAttestor "x509pop" {
-    plugin_data {
-        private_key_path = "/opt/spire/conf/agent-key.pem"
-        certificate_path = "/opt/spire/conf/agent-cert.pem"
-    }
-}
-```
+- The agent uses the TPM-bound DevID certificate provisioned during manufacture or initial commissioning
+- The SPIRE server validates the DevID certificate against a trusted CA
+- The DevID private key cannot be exported or replicated — it is hardware-bound to the TPM
+- Server-side configuration restricts accepted DevID certificate issuers
 
-**Option C — `join_token` (last resort)**
-```hcl
-NodeAttestor "join_token" {
-    plugin_data {}
-}
-```
-
-> **Security note:** `join_token` is a one-time-use credential. After initial attestation, re-attestation requires generating and distributing a new token. This creates operational overhead and a weak security posture — the token proves only that a value was delivered, not the identity of the node. A formal security exception is required if `join_token` is used for production on-premises nodes.
+> **Fallback note:** For on-prem VMs or nodes without TPM 2.0 (e.g., development lab hardware), `x509pop` is an acceptable fallback with certificates from the internal PKI. `join_token` requires a formal security exception and is not permitted for production on-premises nodes.
 
 ---
 
@@ -400,7 +387,7 @@ spire-server entry create \
 
 | Priority | Item | Owner |
 |---|---|---|
-| **High** | Complete on-prem TPM inventory to finalize node attestation plugin selection | Infrastructure team |
+| ~~**High**~~ | ~~Complete on-prem TPM inventory to finalize node attestation plugin selection~~ | ~~Infrastructure team~~ | **Resolved** — fleet audit confirmed TPM 2.0 on all rack servers. `tpm_devid` selected. See §3.4. |
 | **High** | Validate `hostPath` vs CSI driver decision during PoC deployment | Platform team |
 | **Medium** | Define registration entry CI/CD automation patterns per deployment pipeline | Platform + CI/CD team |
 | **Medium** | Establish agent image verification process (cosign signature validation before DaemonSet rollout) | Security + Platform team |

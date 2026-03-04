@@ -48,16 +48,16 @@ Documents are marked with their current status:
 |---|---|
 | [01 — Trust Domain & Attestation Policy](reference-architecture/01-trust-domain-and-attestation-policy.md) | :white_check_mark: Complete |
 | [02 — SPIRE Server HA Architecture](reference-architecture/02-spire-server-ha-architecture.md) | :white_check_mark: Complete |
-| [03 — Nested Topology Patterns](reference-architecture/03-nested-topology-patterns.md) | :arrows_counterclockwise: In Progress (Phase 2) |
-| [04 — Agent Connectivity Requirements](reference-architecture/04-agent-connectivity-requirements.md) | :arrows_counterclockwise: In Progress (Phase 2) |
-| [05 — DNS Resolution Strategy](reference-architecture/05-dns-resolution-strategy.md) | :arrows_counterclockwise: In Progress |
-| [06 — Firewall Rules](reference-architecture/06-firewall-rules.md) | :arrows_counterclockwise: In Progress |
-| [07 — SPIRE Agent Deployment](reference-architecture/07-spire-agent-deployment.md) | :arrows_counterclockwise: In Progress |
-| [08 — Observability](reference-architecture/08-observability.md) | :arrows_counterclockwise: In Progress |
-| [09 — Failure Modes & SRE Runbooks](reference-architecture/09-failure-modes-and-runbooks.md) | :arrows_counterclockwise: In Progress |
-| [10 — Legacy Integration](reference-architecture/10-legacy-integration.md) | :arrows_counterclockwise: In Progress |
-| [11 — Policy as Code](reference-architecture/11-policy-as-code.md) | :arrows_counterclockwise: In Progress |
-| [12 — Network Overlay Architecture](reference-architecture/12-network-overlay-architecture.md) | :arrows_counterclockwise: In Progress |
+| [03 — Nested Topology Patterns](reference-architecture/03-nested-topology-patterns.md) | :white_check_mark: Complete |
+| [04 — Agent Connectivity Requirements](reference-architecture/04-agent-connectivity-requirements.md) | :white_check_mark: Complete |
+| [05 — DNS Resolution Strategy](reference-architecture/05-dns-resolution-strategy.md) | :white_check_mark: Complete |
+| [06 — Firewall Rules](reference-architecture/06-firewall-rules.md) | :white_check_mark: Complete |
+| [07 — SPIRE Agent Deployment](reference-architecture/07-spire-agent-deployment.md) | :white_check_mark: Complete |
+| [08 — Observability](reference-architecture/08-observability.md) | :white_check_mark: Complete |
+| [09 — Failure Modes & SRE Runbooks](reference-architecture/09-failure-modes-and-runbooks.md) | :white_check_mark: Complete |
+| [10 — Legacy Integration](reference-architecture/10-legacy-integration.md) | :white_check_mark: Complete |
+| [11 — Policy as Code](reference-architecture/11-policy-as-code.md) | :white_check_mark: Complete |
+| [12 — Network Overlay Architecture](reference-architecture/12-network-overlay-architecture.md) | :white_check_mark: Complete |
 
 ---
 

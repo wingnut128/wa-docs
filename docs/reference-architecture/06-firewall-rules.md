@@ -4,7 +4,7 @@
 
 Workload Identity | March 2026
 
-**Status:** 🔄 In Progress | **Priority:** Medium
+**Status:** ✅ Complete | **Priority:** Medium
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -44,7 +44,7 @@ This is the **only underlay rule required for SPIRE traffic**. All SPIRE-specifi
 gcloud compute firewall-rules create allow-wireguard \
   --network=<vpc-name> \
   --allow=udp:51820 \
-  --source-ranges=<node-cidr-ranges> \
+  --source-ranges=10.10.1.0/24,10.10.2.0/24,10.10.3.0/24 \
   --target-tags=spire-overlay \
   --description="WireGuard overlay for SPIRE infrastructure"
 ```
@@ -62,7 +62,7 @@ gcloud compute firewall-rules create allow-wireguard \
   "FromPort": 51820,
   "ToPort": 51820,
   "Description": "WireGuard overlay for SPIRE infrastructure",
-  "IpRanges": [{"CidrIp": "<node-cidr>"}]
+  "IpRanges": [{"CidrIp": "10.10.1.0/24"}, {"CidrIp": "10.10.2.0/24"}, {"CidrIp": "10.10.3.0/24"}]
 }
 ```
 
@@ -79,7 +79,7 @@ gcloud compute firewall-rules create allow-wireguard \
     "protocol": "Udp",
     "sourcePortRange": "*",
     "destinationPortRange": "51820",
-    "sourceAddressPrefix": "<node-cidr>",
+    "sourceAddressPrefix": "10.10.0.0/16",
     "destinationAddressPrefix": "*",
     "access": "Allow",
     "priority": 100,
@@ -96,9 +96,9 @@ gcloud compute firewall-rules create allow-wireguard \
 
 | Source CIDR | Destination CIDR | Port | Protocol | Action | Notes |
 |---|---|---|---|---|---|
-| All workload segments | Bowtie controller CIDR | 51820/UDP | WireGuard | Allow | Controller communication |
+| All workload segments | `10.10.0.0/24` (Bowtie controller) | 51820/UDP | WireGuard | Allow | Controller communication |
 | All workload segments | All workload segments | 51820/UDP | WireGuard | Allow | Peer-to-peer tunnels |
-| Bowtie controller CIDR | All workload segments | 51820/UDP | WireGuard | Allow | Controller-to-agent |
+| `10.10.0.0/24` (Bowtie controller) | All workload segments | 51820/UDP | WireGuard | Allow | Controller-to-agent |
 
 > **Simplification note:** For on-prem environments with a flat internal network, a single bidirectional rule permitting UDP 51820 between all nodes in the overlay may be sufficient. For segmented networks with per-VLAN firewalls, the rules above apply per segment boundary.
 
@@ -220,7 +220,7 @@ When a segment is decommissioned (e.g., staging environment removed):
 
 | Priority | Item | Owner |
 |---|---|---|
-| **High** | Confirm on-prem SPIRE server VLAN CIDRs for overlay policy group definitions | Platform team |
+| ~~**High**~~ | ~~Confirm on-prem SPIRE server VLAN CIDRs for overlay policy group definitions~~ | ~~Platform team~~ | **Resolved** — DC1: `10.10.1.0/24`, DC2: `10.10.2.0/24`, downstream: `10.10.3.0/24`, DMZ: `172.16.1.0/24`, controller: `10.10.0.0/24` |
 | **High** | Define Bowtie policy group membership criteria per segment | Security + Platform team |
 | **Medium** | Validate WireGuard UDP 51820 traversal on all cross-segment paths (VPN, Direct Connect, ExpressRoute) | Network team |
 | **Medium** | Document OPA validation rules for Bowtie flow intent policy pre-publication | Security team |

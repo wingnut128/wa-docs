@@ -4,7 +4,7 @@
 
 Workload Identity | February 27, 2026
 
-**Status:** 🔄 In Progress | **Priority:** High
+**Status:** ✅ Complete | **Priority:** High
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -218,8 +218,8 @@ This decision adopts Bowtie as the network overlay. The following items are expl
 | Bowtie/SPIRE node attestation relationship validated | **Done** | Independent parallel mechanisms. Section 3. |
 | Bootstrap sequence documented | **Done** | Section 3.2. |
 | Adopt/reject decision recorded with rationale | **Done** | Section 8. Adopted. |
-| Agent Connectivity Phase 2 scope updated | **Pending** | Impact documented in Section 7. Update required. |
-| Firewall Rules approach revised | **Pending** | Impact documented in Section 7. Update required. |
+| Agent Connectivity Phase 2 scope updated | **Done** | [Agent Connectivity Requirements](04-agent-connectivity-requirements.md) §6 updated with overlay-resolved connectivity model. |
+| Firewall Rules approach revised | **Done** | [Firewall Rules](06-firewall-rules.md) revised to underlay/overlay split. Underlay simplified to WireGuard UDP only. |
 | Policy-as-Code Tooling updated with three-layer policy architecture | **Done** | Updated with three-layer architecture and Bowtie policy surface. |
 
 ---

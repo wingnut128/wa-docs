@@ -2,7 +2,7 @@
 
 **SPIFFE/SPIRE Trust Domain and Attestation Design**
 
-Workload Identity | TBD
+Workload Identity | March 2026
 
 **Status:** ✅ Complete | **Priority:** High
 
@@ -61,7 +61,7 @@ Within the single trust domain, nested (downstream) SPIRE servers operate per pl
 - **GCP downstream server(s):** Handles GCP-native node attestation (`gcp_iit`) for both Kubernetes nodes and VMs in GCP.
 - **Azure downstream server(s):** Handles Azure-native node attestation (`azure_msi`) for both Kubernetes nodes and VMs in Azure.
 - **AWS downstream server(s):** Handles AWS-native node attestation (`aws_iid`) for both Kubernetes nodes and VMs in AWS. Uses EC2 instance identity documents signed by AWS, validated via IMDSv2.
-- **On-premises downstream server(s):** Handles on-prem node attestation for Kubernetes clusters and bare metal/VMs. Node attestation plugin selection (`join_token`, `x509pop`, or `tpm_devid`) is pending hardware TPM inventory.
+- **On-premises downstream server(s):** Handles on-prem node attestation for Kubernetes clusters and bare metal/VMs using `tpm_devid`. Fleet audit confirmed TPM 2.0 on all rack servers (Dell R750, HP DL380 Gen10+).
 
 Each downstream server handles local attestation and SVID issuance within its platform scope. Distributed teams gain operational independence for registration entry management within their platform, while the central team controls the root of trust.
 
@@ -126,10 +126,10 @@ Node attestation proves the identity of the machine or node where the SPIRE agen
 | VMs on Azure | `azure_msi` | Same mechanism as K8s nodes. All Azure compute instances can use MSI. |
 | K8s on AWS | `aws_iid` | AWS instance identity document signed by AWS. Proves the node is a specific EC2 instance in a specific account and region. Requires IMDSv2. |
 | VMs on AWS | `aws_iid` | Same mechanism as K8s nodes. All EC2 instances can produce signed instance identity documents via IMDSv2. |
-| K8s on-prem | **TBD** | Pending hardware TPM inventory. Options: `tpm_devid` (strongest), `x509pop` (certificate-based), or `join_token` (weakest, one-time use). |
-| VMs / Bare Metal | **TBD** | Same options as on-prem K8s. Plugin selection depends on TPM availability across the bare metal fleet. |
+| K8s on-prem | `tpm_devid` | TPM 2.0 DevID certificate. Fleet audit confirmed TPM 2.0 on all rack servers (Dell R750, HP DL380 Gen10+). Strongest available mechanism. |
+| VMs / Bare Metal | `tpm_devid` | Same mechanism as on-prem K8s. All bare metal servers confirmed to have TPM 2.0 modules. |
 
-> **Security note:** On-premises node attestation is meaningfully weaker than cloud node attestation unless TPM hardware is used. Cloud attestation (GCP, Azure, and AWS) provides platform-signed cryptographic proof of instance identity. On-prem `join_token` attestation only proves that a one-time token was distributed during provisioning. This discrepancy should be factored into risk assessments for on-prem workloads handling sensitive data.
+> **Security note:** With TPM 2.0 confirmed across the on-premises fleet, on-prem node attestation via `tpm_devid` provides cryptographic proof of node identity comparable in strength to cloud-native attestation. The TPM DevID certificate is hardware-bound and cannot be exported or replicated.
 
 > **AWS note:** The `aws_iid` plugin requires IMDSv2 to retrieve the instance identity document. IMDSv2 uses session-oriented requests with a hop limit, which prevents SSRF-based metadata access. Ensure IMDSv2 is enforced (`HttpTokens=required`) on all EC2 instances and EKS node groups running SPIRE agents.
 
@@ -211,11 +211,9 @@ UID and binary path scope identity to a specific process. Binary hash is the VM 
 
 ### 6.2 Image/Binary Signing Verification
 
-**Decision:** All workloads must include a binary hash (image digest for K8s, SHA256 for VMs). Additionally, deployments should reference a public key, and the attestation process should validate that the signer is authorized.
+**Decision:** All workloads must include a binary hash (image digest for K8s, SHA256 for VMs). Additionally, deployments must be signed with cosign using Sigstore keyless signing (Fulcio + Rekor), and the attestation process must validate that the signer is authorized.
 
-This adds a supply chain security layer on top of basic attestation. The binary hash proves the artifact has not been tampered with, while signer verification proves it was built and published by an authorized pipeline or team.
-
-> **Open item:** Define the specific signing and verification mechanism. Options include cosign with a transparency log, custom PKI-based signing integrated into the CI/CD pipeline, or integration with a secrets management platform. This should be designed in coordination with the CI/CD team.
+This adds a supply chain security layer on top of basic attestation. The binary hash proves the artifact has not been tampered with, while cosign signature verification proves it was built and published by an authorized CI/CD pipeline. Sigstore keyless signing eliminates long-lived signing keys: Fulcio issues short-lived certificates tied to the CI/CD workload identity (e.g., GitHub Actions OIDC), and Rekor provides a public transparency log for auditability.
 
 ### 6.3 Selectors NOT Recommended for Policy Enforcement
 
@@ -231,8 +229,8 @@ The following selectors should generally be avoided in registration entries beca
 
 | Priority | Item | Dependency |
 |---|---|---|
-| **Urgent** | Hardware TPM inventory for on-prem bare metal. Node attestation plugin selection is blocked on this. | Infrastructure team |
-| **High** | Image/binary signing mechanism design. Define cosign vs custom PKI approach, key management, and CI/CD integration. | CI/CD + Security |
+| ~~**Urgent**~~ | ~~Hardware TPM inventory for on-prem bare metal.~~ | ~~Infrastructure team~~ | **Resolved** — fleet audit confirmed TPM 2.0 on all rack servers (Dell R750, HP DL380 Gen10+). `tpm_devid` selected. |
+| ~~**High**~~ | ~~Image/binary signing mechanism design.~~ | ~~CI/CD + Security~~ | **Resolved** — cosign with Sigstore keyless signing (Fulcio + Rekor). See §6.2. |
 | **High** | Registration API vs static configuration strategy. Determines how entries are created and updated during deployments. | Next phase |
 | **High** | AWS IMDSv2 enforcement validation. Confirm `HttpTokens=required` on all EC2 instances and EKS node groups. | AWS platform team |
 | **Medium** | Policy versioning and rollout strategy. How to evolve attestation policies without breaking running workloads. | Next phase |

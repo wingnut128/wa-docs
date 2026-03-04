@@ -87,16 +87,16 @@ Documents are marked with their current status:
 |---|---|
 | 01 — Trust Domain & Attestation Policy | ✅ Complete |
 | 02 — SPIRE Server HA Architecture | ✅ Complete |
-| 03 — Nested Topology Patterns | 🔄 In Progress (Phase 2) |
-| 04 — Agent Connectivity Requirements | 🔄 In Progress (Phase 2) |
-| 05 — DNS Resolution Strategy | 🔄 In Progress |
-| 06 — Firewall Rules | 🔄 In Progress |
-| 07 — SPIRE Agent Deployment | 🔄 In Progress |
-| 08 — Observability | 🔄 In Progress |
-| 09 — Failure Modes & SRE Runbooks | 🔄 In Progress |
-| 10 — Legacy Integration | 🔄 In Progress |
-| 11 — Policy as Code | 🔄 In Progress |
-| 12 — Network Overlay Architecture | 🔄 In Progress |
+| 03 — Nested Topology Patterns | ✅ Complete |
+| 04 — Agent Connectivity Requirements | ✅ Complete |
+| 05 — DNS Resolution Strategy | ✅ Complete |
+| 06 — Firewall Rules | ✅ Complete |
+| 07 — SPIRE Agent Deployment | ✅ Complete |
+| 08 — Observability | ✅ Complete |
+| 09 — Failure Modes & SRE Runbooks | ✅ Complete |
+| 10 — Legacy Integration | ✅ Complete |
+| 11 — Policy as Code | ✅ Complete |
+| 12 — Network Overlay Architecture | ✅ Complete |
 
 ---
 

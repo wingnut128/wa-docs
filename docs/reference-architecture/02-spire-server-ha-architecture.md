@@ -2,7 +2,7 @@
 
 **SPIFFE/SPIRE High-Availability Server Design**
 
-Workload Identity | TBD
+Workload Identity | March 2026
 
 **Status:** ✅ Complete | **Priority:** High
 
@@ -139,11 +139,11 @@ The on-premises downstream is a separate cluster from the upstream management cl
 |---|---|
 | **SPIRE Servers** | 2 instances in DC1, 1 instance in DC2 (mirrors upstream topology) |
 | **Datastore** | PostgreSQL with Patroni (separate instance from upstream, same DC pair) |
-| **Node Attestation** | TBD — pending TPM inventory. `tpm_devid` preferred, `x509pop` or `join_token` fallback. |
+| **Node Attestation** | `tpm_devid` — fleet audit confirmed TPM 2.0 on all rack servers (Dell R750, HP DL380 Gen10+). |
 | **Load Balancing** | HAProxy with VRRP failover |
 | **HA Budget** | 1 hour (SVID TTL). The Kerberos migration router depends on this cluster. |
 
-> **Security exception required:** If TPM hardware is unavailable across the on-premises bare metal fleet, a formal security exception approved by the security team is required before the Kerberos migration router ([Legacy Integration](10-legacy-integration.md)) can be deployed. The router is critical-path infrastructure during migration. Deploying it under `join_token` attestation materially weakens the security posture at the SPIFFE/Kerberos boundary. The TPM inventory result must be confirmed before the on-prem downstream goes into production.
+> **Security note:** TPM 2.0 is confirmed across the on-premises bare metal fleet (Dell R750, HP DL380 Gen10+). All on-prem downstream nodes use `tpm_devid` attestation, providing hardware-bound node identity comparable in strength to cloud-native attestation. No security exception is required for the Kerberos migration router deployment.
 
 **Decision:** The on-premises downstream cluster is physically and logically separate from the upstream management cluster. They share the same DC pair for regional failover but have independent SPIRE server instances, independent PostgreSQL instances, and independent failure domains. An issue with the on-prem downstream does not affect the upstream or other platform downstreams, and vice versa.
 
@@ -218,7 +218,7 @@ The network segmentation and isolated environment strategy (future work) may dri
 
 | Priority | Item | Owner |
 |---|---|---|
-| **Urgent** | Procure management cluster hardware with TPM 2.0. Spec: 6 server nodes (3 SPIRE + PostgreSQL per DC pair). Exact count pending database team input on colocation of DB instances. | Infrastructure + Procurement |
+| ~~**Urgent**~~ | ~~Procure management cluster hardware with TPM 2.0.~~ | ~~Infrastructure + Procurement~~ | **Resolved** — fleet audit confirmed TPM 2.0 on all rack servers. Hardware procurement complete. |
 | **Urgent** | HSM procurement. Vendor, model, FIPS level. Must support replication across DC pair. Need 2 units (primary + DR). | Security + Procurement |
 | **Urgent** | Root CA ceremony planning. HSM initialization, root key generation, intermediate CA issuance, trust bundle bootstrap. Requires physical presence at DC. **This is on the critical path for the entire deployment — no SVIDs can be issued until the root CA exists.** Schedule the ceremony as a dependency of hardware and HSM procurement, not after them. | Security + Platform team |
 | **High** | Database team engagement. Agree on PostgreSQL Patroni topology, `synchronous_mode_strict` policy, backup strategy, and operational handoff model. | Database team |

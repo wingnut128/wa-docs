@@ -4,7 +4,7 @@
 
 Workload Identity | March 2026
 
-**Status:** 🔄 In Progress | **Priority:** Medium
+**Status:** ✅ Complete | **Priority:** Medium
 
 **Scope:** Connected infrastructure only. Air-gapped/isolated segments are addressed separately.
 
@@ -239,11 +239,14 @@ The artifact signing PKI integrates with SPIRE at two points:
 1. **SPIRE server binary verification:** Before a new SPIRE server binary is deployed, the deployment automation validates its signature against the signing PKI. See [SPIRE Server HA Architecture](02-spire-server-ha-architecture.md) §7.1.
 2. **Workload attestation selector:** Container image digest and binary SHA256 selectors (defined in [Trust Domain & Attestation Policy](01-trust-domain-and-attestation-policy.md) §6.1) reference the build artifact. The signing PKI proves the artifact is authentic; SPIRE proves the authentic artifact is running on an attested node.
 
-### 7.3 Open Items
+### 7.3 Signing Mechanism Decision
 
-- Define the signing PKI root CA ceremony and key management procedures
-- Select tooling: cosign with transparency log, custom PKI, or integration with existing enterprise signing infrastructure
-- Establish CI/CD integration for automated signing and verification
+**Decision:** cosign with Sigstore keyless signing (Fulcio + Rekor).
+
+- **Fulcio** issues short-lived signing certificates tied to CI/CD workload identity (e.g., GitHub Actions OIDC). No long-lived signing keys to manage.
+- **Rekor** provides a public transparency log, enabling auditable verification of all signed artifacts.
+- CI/CD pipelines sign artifacts automatically using `cosign sign` with keyless mode. Verification uses `cosign verify` against the Sigstore public good instance or an organization-hosted instance.
+- This applies to SPIRE server binaries, agent container images, and workload container images referenced in registration entry image digest selectors.
 
 ---
 
@@ -275,7 +278,7 @@ Services should be prioritized for native SPIFFE migration based on:
 | **High** | Complete Kerberos-to-SPIFFE mapping table for the initial set of migration candidates | Platform + Application teams |
 | **High** | Validate Envoy SDS integration with SPIRE agent in PoC environment | Platform team |
 | **Medium** | Define JWKS endpoint availability requirements and caching strategy for JWT-SVID consumers | Platform + Application teams |
-| **Medium** | Artifact signing PKI design: root CA ceremony, tooling selection, CI/CD integration | Security + CI/CD team |
+| ~~**Medium**~~ | ~~Artifact signing PKI design: root CA ceremony, tooling selection, CI/CD integration~~ | ~~Security + CI/CD team~~ | **Resolved** — cosign with Sigstore keyless signing (Fulcio + Rekor). See §7.3. |
 | **Low** | Document application-specific migration guides for high-priority legacy services | Application teams |
 
 ---

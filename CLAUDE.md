@@ -86,6 +86,13 @@ When editing or adding content to these documents:
 - Record design decisions with rationale inline rather than as standalone entries
 - When adding a new document: assign the next available global number, place in `docs/reference-architecture/`, and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `mkdocs.yml` (nav tree)
 
+## Task Tracking
+
+When implementing a multi-step plan:
+- Create a checkbox task list (using `- [ ]` / `- [x]` markdown syntax) as a TODO at the start
+- Check each box (`- [x]`) when the task is done
+- Always update `docs/reading-order.md` as part of any task that adds, removes, or changes document dependencies
+
 ## Git Workflow
 
 - After a PR is merged, delete both the local and remote feature branches

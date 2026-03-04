@@ -49,6 +49,15 @@ markdown_extensions:
   - attr_list
   - md_in_html
 
+extra:
+  generator: false
+
+copyright: >
+  <strong>Disclaimer:</strong> This documentation is for educational and research purposes only.
+  Provided "as-is" without warranty. The authors are not responsible for any errors, omissions,
+  or damages arising from use of this material. Consult qualified professionals before
+  implementing any architecture in production.
+
 plugins:
   - search
 

@@ -66,3 +66,15 @@ Documents are marked with their current status:
 **In scope (this repository):** Connected infrastructure — GCP, Azure, AWS, and on-premises environments with network connectivity to the upstream SPIRE cluster.
 
 **Out of scope:** Air-gapped and isolated network segments. These require independent trust domains, manual trust bundle provisioning, and different operational models. That design work is captured separately.
+
+---
+
+## Disclaimer
+
+!!! warning "Educational Use Only"
+
+    This documentation is provided for **educational and research purposes only**. It is offered "as-is" without warranty of any kind, express or implied. The authors make no guarantees regarding the accuracy, completeness, or suitability of the information presented.
+
+    This content does not constitute professional security, engineering, or architectural advice. Use at your own risk — the authors are not responsible for any errors, omissions, or damages arising from the use of this material.
+
+    Always consult qualified professionals before implementing any architecture in a production environment.

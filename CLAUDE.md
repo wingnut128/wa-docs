@@ -15,7 +15,7 @@ All documentation lives under `docs/` and is served by MkDocs Material:
 - `docs/reading-order.md` — reading paths and dependency map
 - `mkdocs.yml` — MkDocs Material configuration and nav tree
 
-Documents use a **global numbering scheme** (01–12) across `docs/reference-architecture/`. Numbers are not strictly sequential — the reading order and dependency chain in `docs/reading-order.md` define the actual sequence.
+Documents use a **global numbering scheme** across `docs/reference-architecture/` (currently 01–12). Numbers are not strictly sequential — the reading order and dependency chain in `docs/reading-order.md` define the actual sequence. New documents get the next available number.
 
 The dependency chain matters:
 - `01-trust-domain-and-attestation-policy.md` is the root — decisions here constrain everything downstream
@@ -28,9 +28,9 @@ See `README.md` for the intended full document set (many are planned/stub status
 
 ## MkDocs Site
 
-- **Live site:** https://wingnut128.github.io/wa-docs/ (deployment currently disabled)
-- **Build locally:** `uv pip install --system -r requirements.txt && mkdocs build --strict`
-- **Serve locally:** `mkdocs serve` (auto-reloads on file changes)
+- **Live site:** https://wingnut128.github.io/wa-docs/ (GitHub Pages deployment is disabled)
+- **Build locally:** `uv pip install --system -r requirements.txt && python -m mkdocs build --strict`
+- **Serve locally:** `python -m mkdocs serve` (auto-reloads on file changes; use `python -m` — the `mkdocs` CLI may not be on PATH)
 
 ## Document Conventions
 
@@ -84,7 +84,8 @@ When editing or adding content to these documents:
 - Preserve the status/metadata header format at the top of each document
 - Keep scope boundaries explicit — do not mix connected and air-gapped concerns
 - Record design decisions with rationale inline rather than as standalone entries
-- When adding a new document: assign the next available global number, place in `docs/reference-architecture/`, and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `mkdocs.yml` (nav tree)
+- When adding a new document: assign the next available global number, place in `docs/reference-architecture/` (flat — no subdirectories), and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `mkdocs.yml` (nav tree)
+- Do not create subdirectories under `docs/reference-architecture/` — the flat structure is intentional
 
 ## Task Tracking
 

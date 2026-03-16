@@ -1,7 +1,8 @@
 name: Version Bump
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [main]
 
 permissions:
@@ -9,19 +10,20 @@ permissions:
 
 jobs:
   bump:
+    if: github.event.pull_request.merged == true && github.event.pull_request.user.login == 'wingnut128'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Determine bump type from commit message
+      - name: Determine bump type from PR title
         id: bump
         run: |
-          MSG=$(git log -1 --pretty=%B)
-          if echo "$MSG" | grep -qi '\[major\]'; then
+          TITLE="${{ github.event.pull_request.title }}"
+          if echo "$TITLE" | grep -qi '\[major\]'; then
             echo "type=major" >> "$GITHUB_OUTPUT"
-          elif echo "$MSG" | grep -qi '\[minor\]'; then
+          elif echo "$TITLE" | grep -qi '\[minor\]'; then
             echo "type=minor" >> "$GITHUB_OUTPUT"
           else
             echo "type=patch" >> "$GITHUB_OUTPUT"

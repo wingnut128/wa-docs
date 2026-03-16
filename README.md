@@ -11,7 +11,12 @@ The repository has two parallel tracks:
 
 ## Documentation Site
 
-**Read the rendered documentation at [wingnut128.github.io/wa-docs](https://wingnut128.github.io/wa-docs/)** — includes sidebar navigation, search, and Mermaid dependency diagrams.
+The documentation is built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) and can be served locally:
+
+```bash
+pip install -r requirements.txt
+python -m mkdocs serve
+```
 
 ---
 

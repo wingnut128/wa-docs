@@ -89,6 +89,9 @@ graph LR
     B --> K["08 Observability"]
     J --> K
     K --> L["09 Failure Modes<br>& Runbooks"]
+    A --> M["13 WIMSE & Agentic<br>Attestation"]
+    C --> M
+    E --> M
     I --> B
 ```
 
@@ -110,3 +113,6 @@ graph LR
 | 02 | 08 | Monitoring covers upstream, downstream, PostgreSQL, HAProxy components |
 | 07 | 08 | Agent health endpoints feed into observability stack |
 | 08 | 09 | Alerting rules trigger SRE runbooks |
+| 01 | 13 | WIMSE tokens derive from SPIFFE ID structure and attestation selectors |
+| 03 | 13 | WIMSE propagation crosses trust domain boundaries defined in nested topology |
+| 12 | 13 | WIMSE operates at L7 above the Bowtie/WireGuard L4 transport |

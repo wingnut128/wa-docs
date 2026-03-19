@@ -81,6 +81,7 @@ nav:
       - Policy & Integration:
           - "10 — Legacy Integration": reference-architecture/10-legacy-integration.md
           - "11 — Policy as Code": reference-architecture/11-policy-as-code.md
+          - "13 — WIMSE & Agentic Attestation": reference-architecture/13-wimse-and-agentic-attestation.md
   - Proof of Concept:
       - poc/index.md
       - "01 — PoC Architecture": poc/01-poc-architecture.md

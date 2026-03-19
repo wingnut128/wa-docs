@@ -58,6 +58,7 @@ Documents are marked with their current status:
 | [10 — Legacy Integration](reference-architecture/10-legacy-integration.md) | :white_check_mark: Complete |
 | [11 — Policy as Code](reference-architecture/11-policy-as-code.md) | :white_check_mark: Complete |
 | [12 — Network Overlay Architecture](reference-architecture/12-network-overlay-architecture.md) | :white_check_mark: Complete |
+| [13 — WIMSE & Agentic Attestation](reference-architecture/13-wimse-and-agentic-attestation.md) | :construction: Stub |
 
 ---
 

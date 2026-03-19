@@ -46,7 +46,8 @@ docs/
 │   ├── 09-failure-modes-and-runbooks.md            # Failure scenarios, SRE runbooks, recovery procedures
 │   ├── 10-legacy-integration.md                    # Integration patterns for non-SVID-native services
 │   ├── 11-policy-as-code.md                        # Kyverno/OPA, admission control, enforcement strategy
-│   └── 12-network-overlay-architecture.md          # Bowtie/WireGuard overlay, resolves DMZ and cross-CSP blockers
+│   ├── 12-network-overlay-architecture.md          # Bowtie/WireGuard overlay, resolves DMZ and cross-CSP blockers
+│   └── 13-wimse-and-agentic-attestation.md        # WIMSE + SPIFFE for cross-boundary HTTP propagation and agentic delegation chains
 └── poc/
     ├── index.md                                    # PoC overview and objectives
     ├── 01-poc-architecture.md                      # Scope, constraints, where PoC diverges from reference
@@ -102,6 +103,7 @@ Documents are marked with their current status:
 | 10 — Legacy Integration | ✅ Complete |
 | 11 — Policy as Code | ✅ Complete |
 | 12 — Network Overlay Architecture | ✅ Complete |
+| 13 — WIMSE & Agentic Attestation | 🚧 Stub |
 
 ---
 

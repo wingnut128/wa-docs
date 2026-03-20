@@ -11,12 +11,15 @@ The repository has two parallel tracks:
 
 ## Documentation Site
 
-The documentation is built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) and can be served locally:
+The documentation is served by a Bun + Hono TypeScript server:
 
 ```bash
-pip install -r requirements.txt
-python -m mkdocs serve
+bun install
+make dev    # auto-reload on changes
+make start  # production start
 ```
+
+Run `make` for all available targets.
 
 ---
 

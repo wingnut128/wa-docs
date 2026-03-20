@@ -1,0 +1,29 @@
+{
+  "name": "wa-docs-server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch server/index.ts",
+    "start": "bun run server/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4",
+    "unified": "^11",
+    "remark-parse": "^11",
+    "remark-gfm": "^4",
+    "remark-emoji": "^5",
+    "remark-rehype": "^11",
+    "rehype-slug": "^6",
+    "rehype-autolink-headings": "^7",
+    "rehype-highlight": "^7",
+    "rehype-stringify": "^10",
+    "yaml": "^2",
+    "unist-util-visit": "^5",
+    "hast-util-from-html": "^2",
+    "mdast-util-to-hast": "^13"
+  },
+  "devDependencies": {
+    "@types/bun": "^1"
+  }
+}

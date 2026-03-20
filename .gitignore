@@ -34,8 +34,12 @@ service-account*.json
 kubeconfig
 kubeconfig.*
 
-# MkDocs build output
+# Legacy MkDocs build output
 site/
+
+# Node / Bun
+node_modules/
+bun.lockb
 
 # Terraform / IaC state (if PoC artifacts land here)
 *.tfstate

@@ -1,65 +1,10 @@
 site_name: SPIFFE/SPIRE Workload Identity — Reference Architecture
-site_url: https://wingnut128.github.io/wa-docs/
-repo_url: https://github.com/wingnut128/wa-docs
-repo_name: wingnut128/wa-docs
-edit_uri: edit/main/docs/
-
-theme:
-  name: material
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.top
-    - navigation.indexes
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-    - toc.follow
-
-markdown_extensions:
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - toc:
-      permalink: true
-  - tables
-  - attr_list
-  - md_in_html
-
-extra:
-  generator: false
 
 copyright: >
   <strong>Disclaimer:</strong> This documentation is for educational and research purposes only.
   Provided "as-is" without warranty. The authors are not responsible for any errors, omissions,
   or damages arising from use of this material. Consult qualified professionals before
   implementing any architecture in production.
-
-plugins:
-  - search
 
 nav:
   - Home: index.md

@@ -18,6 +18,18 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
 }
 
+[data-theme="dark"] {
+  --accent: #FF8A8A;
+  --accent-hover: #FF6B6B;
+  --accent-light: #2a1f1f;
+  --bg: #1a1a2e;
+  --bg-white: #16213e;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #2d3748;
+  --code-bg: #1e293b;
+}
+
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
@@ -186,7 +198,7 @@ body {
   background: var(--code-bg);
   font-weight: 600;
 }
-.doc tr:nth-child(even) { background: #fafafa; }
+.doc tr:nth-child(even) { background: var(--bg); }
 
 /* === Code === */
 .doc code {
@@ -252,6 +264,27 @@ body {
 .admonition.tip .admonition-title { color: #047857; }
 .admonition.note { border-left-color: #3b82f6; background: #eff6ff; }
 .admonition.note .admonition-title { color: #1d4ed8; }
+
+[data-theme="dark"] .admonition.warning { background: #2a2215; }
+[data-theme="dark"] .admonition.warning .admonition-title { color: #fbbf24; }
+[data-theme="dark"] .admonition.tip { background: #1a2e24; }
+[data-theme="dark"] .admonition.tip .admonition-title { color: #34d399; }
+[data-theme="dark"] .admonition.note { background: #1a2236; }
+[data-theme="dark"] .admonition.note .admonition-title { color: #60a5fa; }
+
+/* === Theme Toggle === */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
 /* === Mermaid === */
 .mermaid { margin: 1.5rem 0; text-align: center; }

@@ -4,16 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is a **documentation-only** repository — there is no application code, build system, or test suite. It contains a reference architecture and adoption framework for SPIFFE/SPIRE workload identity across a multi-platform environment (GCP, Azure, AWS, on-premises Kubernetes, VMs, bare metal).
+This repository contains a reference architecture and adoption framework for SPIFFE/SPIRE workload identity across a multi-platform environment (GCP, Azure, AWS, on-premises Kubernetes, VMs, bare metal). The documentation is served by a Bun + Hono TypeScript server (`server/`).
 
 ## Structure
 
-All documentation lives under `docs/` and is served by MkDocs Material:
+All documentation lives under `docs/` and is served by the TypeScript server in `server/`:
 - `docs/reference-architecture/` — platform-agnostic design patterns and decisions (flat directory, no subdirectories)
 - `docs/poc/` — runnable PoC deployment validating the reference architecture
 - `docs/index.md` — site home page
 - `docs/reading-order.md` — reading paths and dependency map
-- `mkdocs.yml` — MkDocs Material configuration and nav tree
+- `site.yml` — nav tree and site metadata
 
 Documents use a **global numbering scheme** across `docs/reference-architecture/` (currently 01–12). Numbers are not strictly sequential — the reading order and dependency chain in `docs/reading-order.md` define the actual sequence. New documents get the next available number.
 
@@ -26,11 +26,11 @@ The dependency chain matters:
 
 See `README.md` for the intended full document set (many are planned/stub status) and the design decisions log.
 
-## MkDocs Site
+## Document Server
 
-- **Live site:** https://wingnut128.github.io/wa-docs/ (GitHub Pages deployment is disabled)
-- **Build locally:** `uv pip install --system -r requirements.txt && python -m mkdocs build --strict`
-- **Serve locally:** `python -m mkdocs serve` (auto-reloads on file changes; use `python -m` — the `mkdocs` CLI may not be on PATH)
+- **Serve locally:** `make dev` (auto-reloads on changes) or `make start`
+- **Run targets:** `make` with no arguments to see all targets
+- **Security scan:** `make scan` (semgrep)
 
 ## Document Conventions
 
@@ -84,7 +84,7 @@ When editing or adding content to these documents:
 - Preserve the status/metadata header format at the top of each document
 - Keep scope boundaries explicit — do not mix connected and air-gapped concerns
 - Record design decisions with rationale inline rather than as standalone entries
-- When adding a new document: assign the next available global number, place in `docs/reference-architecture/` (flat — no subdirectories), and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `mkdocs.yml` (nav tree)
+- When adding a new document: assign the next available global number, place in `docs/reference-architecture/` (flat — no subdirectories), and update all three: `README.md` (structure tree, decisions log, status table), `docs/reading-order.md` (dependency map and relevant reading paths), `site.yml` (nav tree)
 - Do not create subdirectories under `docs/reference-architecture/` — the flat structure is intentional
 
 ## Task Tracking

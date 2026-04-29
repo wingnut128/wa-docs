@@ -5,7 +5,7 @@ COPY package.json bun.lock ./
 RUN bun install --production
 
 # Runtime stage: Chainguard hardened base with glibc
-FROM cgr.dev/chainguard/glibc-dynamic:latest@sha256:fa0d07a6a352921b778c4da11d889b41d9ef8e99c69bc2ec1f8c9ec46b2462e9
+FROM cgr.dev/chainguard/glibc-dynamic:latest@sha256:f85add3add56b070e890089bdf948212715da181a396bf9dd163b088988fbcd2
 WORKDIR /app
 
 # Copy glibc-linked bun binary from build stage

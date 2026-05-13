@@ -1,5 +1,5 @@
 # Build stage: install dependencies using bun (glibc)
-FROM oven/bun:1-debian@sha256:e95356cb8e1de62ad69ab3bd3584ba947013d27650a226804d2fc0af4e17dac2 AS build
+FROM oven/bun:1-debian@sha256:9dba1a1b43ce28c9d7931bfc4eb00feb63b0114720a0277a8f939ae4dfc9db6f AS build
 WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --production

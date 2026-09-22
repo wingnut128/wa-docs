@@ -108,7 +108,7 @@ graph LR
 | 12 | 06 | Underlay simplifies to WireGuard UDP |
 | 12 | 11 | Three-layer policy model: Kyverno + Bowtie + OPA |
 | 04 | 05 | DNS outputs feed back into connectivity matrix |
-| 03 | 10 | JWT-SVID TTL from §5.3 applies to legacy integrations |
+| 03 | 10 | JWT-SVID TTL from [01](reference-architecture/01-trust-domain-and-attestation-policy.md) §5.3 applies to legacy integrations |
 | 10 | 02 | Kerberos router HA dependency on on-prem downstream |
 | 02 | 08 | Monitoring covers upstream, downstream, PostgreSQL, HAProxy components |
 | 07 | 08 | Agent health endpoints feed into observability stack |

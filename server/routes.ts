@@ -37,7 +37,7 @@ export async function registerRoutes(app: Hono, rootDir: string) {
     }
     try {
       const source = readFileSync(filePath, "utf-8");
-      const { html, headings } = await renderMarkdown(source, routeMap);
+      const { html, headings } = await renderMarkdown(source, routeMap, info.mdPath);
       cache.set(route, { html, headings, title: info.title });
     } catch (err) {
       console.error("Failed to render %s: %o", info.mdPath, err);

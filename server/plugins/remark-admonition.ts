@@ -1,7 +1,6 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
-import type { Root, Paragraph, Text } from "mdast";
-import { escapeHtml } from "../utils/html";
+import type { Root, Paragraph, Text, RootContent } from "mdast";
 
 /**
  * Remark plugin to convert admonitions to HTML.
@@ -10,9 +9,11 @@ import { escapeHtml } from "../utils/html";
  *   !!! warning "Title"
  *       indented content
  *
- * Produces a <div class="admonition warning"> block.
+ * Produces a <div class="admonition warning"> block. The body is parsed as
+ * markdown, so inline formatting and links inside admonitions render.
  */
-export const remarkAdmonition: Plugin<[], Root> = () => {
+export const remarkAdmonition: Plugin<[], Root> = function () {
+  const processor = this;
   return (tree: Root) => {
     const nodes = tree.children;
     let i = 0;
@@ -68,14 +69,22 @@ export const remarkAdmonition: Plugin<[], Root> = () => {
         }
       }
 
-      // Replace original nodes with an HTML node
-      const bodyHtml = bodyParts.map((p) => `<p>${escapeHtml(p)}</p>`).join("\n");
-      const admonitionHtml = {
-        type: "html" as const,
-        value: `<div class="admonition ${escapeHtml(admonType)}"><p class="admonition-title">${escapeHtml(title)}</p>${bodyHtml}</div>`,
-      };
+      // Replace original nodes with a container that remark-rehype renders as a <div>
+      const body = processor.parse(bodyParts.join("\n\n")) as Root;
+      const admonition = {
+        type: "blockquote" as const,
+        data: { hName: "div", hProperties: { className: ["admonition", admonType] } },
+        children: [
+          {
+            type: "paragraph" as const,
+            data: { hProperties: { className: ["admonition-title"] } },
+            children: [{ type: "text" as const, value: title }],
+          },
+          ...(body.children as any[]),
+        ],
+      } as RootContent;
 
-      nodes.splice(i, j - i, admonitionHtml);
+      nodes.splice(i, j - i, admonition);
       i++;
     }
   };

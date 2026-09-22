@@ -22,5 +22,9 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+      # Structural § checks always; semantic checks only when the secret is available
+      - run: bun run scripts/xref-check.ts
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
       - run: bun run server/index.ts &
       - run: sleep 2 && curl -sf http://localhost:8080/healthz

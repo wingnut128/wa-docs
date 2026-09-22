@@ -1,7 +1,7 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { Root, Element } from "hast";
-import { mdPathToRoute } from "../nav";
+import { posix } from "path";
 
 interface Options {
   routeMap: Map<string, { title: string; mdPath: string }>;
@@ -10,29 +10,31 @@ interface Options {
 /**
  * Rehype plugin that rewrites relative .md links to server routes.
  *
- * Handles:
- *   href="04-agent-connectivity-requirements.md"             -> /reference-architecture/04-agent-connectivity-requirements
- *   href="../reference-architecture/01-trust-domain-and-attestation-policy.md#section" -> /reference-architecture/01-trust-domain-and-attestation-policy#section
- *   href="01-poc-architecture.md"                            -> /poc/01-poc-architecture
+ * Links are resolved relative to the linking document's own path (the vfile
+ * path, docs-relative), so same-named files in different directories —
+ * index.md and poc/index.md — map to their own routes.
+ *
+ * Handles (from reference-architecture/06-firewall-rules.md):
+ *   href="04-agent-connectivity-requirements.md"         -> /reference-architecture/04-agent-connectivity-requirements
+ *   href="../poc/01-poc-architecture.md#section"         -> /poc/01-poc-architecture#section
+ *   href="../index.md"                                   -> /
  */
 export const rehypeRewriteLinks: Plugin<[Options], Root> = (options) => {
-  // Build a lookup from filename to route
-  const fileToRoute = new Map<string, string>();
+  const pathToRoute = new Map<string, string>();
   for (const [route, info] of options.routeMap) {
-    const filename = info.mdPath.split("/").pop()!;
-    fileToRoute.set(filename, route);
-    // Also index by full relative path
-    fileToRoute.set(info.mdPath, route);
+    pathToRoute.set(info.mdPath, route);
   }
 
-  return (tree: Root) => {
+  return (tree: Root, file) => {
+    const baseDir = file.path ? posix.dirname(file.path) : ".";
+
     visit(tree, "element", (node: Element) => {
       if (node.tagName !== "a") return;
       const href = node.properties?.href as string | undefined;
       if (!href) return;
 
       // Skip external links and anchors
-      if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#")) {
+      if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("#") || href.startsWith("/")) {
         return;
       }
 
@@ -40,12 +42,8 @@ export const rehypeRewriteLinks: Plugin<[Options], Root> = (options) => {
       const [pathPart, fragment] = href.split("#");
       if (!pathPart.endsWith(".md")) return;
 
-      // Normalize the path - strip leading ../ segments
-      const normalizedPath = pathPart.replace(/^(\.\.\/)+/, "");
-      const filename = normalizedPath.split("/").pop()!;
-
-      // Try to find the route
-      let route = fileToRoute.get(normalizedPath) || fileToRoute.get(filename);
+      const resolved = posix.normalize(posix.join(baseDir, pathPart));
+      const route = pathToRoute.get(resolved);
 
       if (route) {
         node.properties!.href = fragment ? `${route}#${fragment}` : route;

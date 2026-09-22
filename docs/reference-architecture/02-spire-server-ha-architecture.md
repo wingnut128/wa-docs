@@ -232,7 +232,7 @@ The network segmentation and isolated environment strategy (future work) may dri
 ## 11. Related Documents
 
 - `01-trust-domain-and-attestation-policy.md` — Nested topology, SVID TTL, and trust domain architecture are direct inputs to this design
-- `03-nested-topology-patterns.md` — Intermediate CA TTL values (tier 1 of the trust chain) are determined by the upstream CA rotation design in §7.3
+- `03-nested-topology-patterns.md` — Intermediate CA TTL values (tier 1 of the trust chain) are determined by the upstream CA rotation design in §7.3 of this document
 - `10-legacy-integration.md` — Kerberos migration router's dependency on the on-prem downstream cluster
 - `07-spire-agent-deployment.md` — Agent deployment depends on SPIRE server endpoints and load balancer addresses defined here
 - `08-observability.md` — Monitoring must cover all components: upstream/downstream SPIRE servers, PostgreSQL replication lag, Patroni state, HSM health, cross-connect status

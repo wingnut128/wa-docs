@@ -24,6 +24,7 @@
     "mdast-util-to-hast": "^13"
   },
   "devDependencies": {
-    "@types/bun": "^1"
+    "@types/bun": "^1",
+    "@typesafe-ai/sdk": "^0.6"
   }
 }

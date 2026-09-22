@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help dev start scan docker-build docker-run docker-stop
+.PHONY: help dev start scan xref docker-build docker-run docker-stop
 
 IMAGE_NAME := wa-docs
 CONTAINER_NAME := wa-docs
@@ -19,6 +19,9 @@ scan: ## Run semgrep security scan on server/
 	semgrep scan --config auto --config p/typescript --config p/javascript \
 		--exclude node_modules --exclude bun.lockb \
 		server/
+
+xref: ## Check § cross-references (semantic checks need TYPESAFE_API_KEY)
+	bun run scripts/xref-check.ts
 
 docker-build: ## Build container image
 	docker build -t $(IMAGE_NAME) .

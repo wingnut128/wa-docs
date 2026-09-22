@@ -31,6 +31,7 @@ See `README.md` for the intended full document set (many are planned/stub status
 - **Serve locally:** `make dev` (auto-reloads on changes) or `make start`
 - **Run targets:** `make` with no arguments to see all targets
 - **Security scan:** `make scan` (semgrep)
+- **Cross-reference check:** `make xref` — dangling `§` references fail; with `TYPESAFE_API_KEY` set, TypeSafe also judges whether each cited section supports the citing passage (warnings only; `--strict` to fail)
 
 ## Document Conventions
 
